@@ -2209,22 +2209,18 @@
             .select("id,title,description,status")
             .eq("status", "pending")
             .order("created_at"),
-          db.from("candidate_proposals")
-            .select("id,category_id,name,status")
-            .eq("status", "pending")
-            .order("created_at")
+          db.rpc("admin_candidate_proposals")
         ]);
 
         if (proposalsRes.error) throw proposalsRes.error;
         if (candRes.error) throw candRes.error;
 
-        // Считаем голоса поддержки (доступно админу).
+        // Голоса за предложения считаем RPC-функцией (админской).
         let counts = new Map();
-        const votesRes = await db.from("proposal_votes")
-          .select("proposal_id");
-        if (!votesRes.error) {
-          counts = votesRes.data.reduce((map, row) => {
-            map.set(row.proposal_id, (map.get(row.proposal_id) || 0) + 1);
+        const countsRes = await db.rpc("admin_proposal_counts");
+        if (!countsRes.error) {
+          counts = countsRes.data.reduce((map, row) => {
+            map.set(String(row.proposal_id), Number(row.votes));
             return map;
           }, new Map());
         }
@@ -2432,11 +2428,11 @@
       $("admin-settings-status").textContent = "Сохраняем…";
 
       try {
-        const { error } = await db.from("settings").update({
-          stage: $("admin-stage").value,
-          voting_open: $("admin-voting-open").checked,
-          final_count: Number($("admin-final-count").value) || 14
-        }).eq("id", 1);
+        const { error } = await db.rpc("admin_update_settings", {
+          p_stage: $("admin-stage").value,
+          p_voting_open: $("admin-voting-open").checked,
+          p_final_count: Number($("admin-final-count").value) || 14
+        });
         if (error) throw error;
 
         $("admin-settings-status").textContent = "Сохранено. Обновляем…";
