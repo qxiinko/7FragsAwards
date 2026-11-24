@@ -8,6 +8,10 @@
         content="7FragsAwards2026 — выбираем героев нашего сообщества.">
   <title>7FragsAwards2026</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
     :root {
       color-scheme: dark;
@@ -17,47 +21,54 @@
       --muted: #a3a39b;
       --accent: #dcff62;
       --discord: #5865f2;
+      --card: linear-gradient(160deg, #1d1d1d, #141414);
     }
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; scroll-padding-top: 95px; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
     body {
       margin: 0;
       background: var(--bg);
       color: var(--text);
-      font: 16px/1.5 Arial, Helvetica, sans-serif;
+      font: 16px/1.55 Manrope, Arial, Helvetica, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, .logo, .ghost {
+      font-family: Unbounded, Manrope, Arial, sans-serif;
     }
     button, input, select, textarea { font: inherit; }
     button { cursor: pointer; }
-    button:disabled { opacity: .5; cursor: not-allowed; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
     a { color: inherit; text-decoration: none; }
     [hidden] { display: none !important; }
     :focus-visible {
-      outline: 3px solid var(--accent);
-      outline-offset: 4px;
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
     }
     .wrap {
       width: min(1180px, calc(100% - 40px));
       margin-inline: auto;
     }
+
+    /* ---------- Шапка ---------- */
     .topbar {
       position: sticky;
       top: 0;
       z-index: 10;
-      background: #101010ed;
+      background: #101010ee;
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
     }
     .nav {
-      min-height: 76px;
+      min-height: 78px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
     }
     .logo {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 900;
-      letter-spacing: -1px;
+      letter-spacing: -0.5px;
       white-space: nowrap;
     }
     .logo span { color: var(--accent); }
@@ -68,19 +79,30 @@
       flex-wrap: wrap;
       gap: 10px;
     }
-    .nav-link { font-size: 14px; color: var(--muted); }
+    .nav-link {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+      transition: color .2s;
+    }
+    .nav-link:hover { color: var(--text); }
+
+    /* ---------- Кнопки ---------- */
     .button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 46px;
-      padding: 12px 20px;
+      gap: 8px;
+      min-height: 48px;
+      padding: 12px 22px;
       border: 1px solid transparent;
       border-radius: 12px;
       background: var(--accent);
       color: #101010;
       font-weight: 800;
-      transition: transform .2s, filter .2s;
+      font-size: 14px;
+      letter-spacing: .01em;
+      transition: transform .2s, filter .2s, border-color .2s;
     }
     .button:hover:not(:disabled) {
       filter: brightness(1.08);
@@ -91,15 +113,26 @@
       border-color: var(--border);
       color: var(--text);
     }
+    .button.secondary:hover:not(:disabled) { border-color: #6a6a60; }
     .button.discord { background: var(--discord); color: white; }
+    .button.danger {
+      background: transparent;
+      border-color: #5c2a2a;
+      color: #e08a8a;
+    }
+    .button.danger:hover:not(:disabled) { border-color: #8a3d3d; }
+    .button.sm { min-height: 42px; padding: 10px 16px; }
+
+    /* ---------- Hero ---------- */
     .hero {
-      padding: 80px 0 35px;
+      padding: 84px 0 36px;
       border-bottom: 1px solid var(--border);
-      background: radial-gradient(ellipse at 90% 0%, #dcff6210, transparent 50%);
+      background:
+        radial-gradient(ellipse 55% 60% at 88% -10%, #dcff6216, transparent 70%);
     }
     .hero-layout {
       display: grid;
-      grid-template-columns: 1fr 260px;
+      grid-template-columns: 1fr 240px;
       align-items: center;
       gap: 30px;
     }
@@ -107,21 +140,21 @@
       color: var(--accent);
       font-size: 12px;
       font-weight: 800;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       text-transform: uppercase;
     }
     h1 {
-      margin: 24px 0;
-      font-size: clamp(48px, 7.5vw, 100px);
+      margin: 26px 0;
+      font-size: clamp(46px, 7.2vw, 96px);
       font-weight: 900;
-      line-height: .98;
-      letter-spacing: -.065em;
+      line-height: 1;
+      letter-spacing: -.03em;
       text-transform: uppercase;
     }
     h1 span { color: var(--accent); }
     .lead {
-      max-width: 560px;
-      margin-bottom: 28px;
+      max-width: 540px;
+      margin-bottom: 30px;
       color: var(--muted);
       font-size: 17px;
     }
@@ -130,26 +163,31 @@
       width: 100%;
       color: var(--accent);
       transform: rotate(9deg);
-      filter: drop-shadow(0 0 35px #dcff6220);
+      filter: drop-shadow(0 0 40px #dcff6222);
     }
     .strip {
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 14px;
-      margin-top: 50px;
+      margin-top: 54px;
       padding-top: 20px;
       border-top: 1px solid var(--border);
       color: var(--muted);
       font-size: 13px;
     }
     .strip strong { color: var(--text); }
-    section { padding: 48px 0; }
+    .strip .live { color: var(--accent); font-weight: 700; }
+
+    /* ---------- Секции ---------- */
+    section { padding: 52px 0; }
     h2 {
       margin: 0 0 10px;
-      font-size: clamp(28px, 4vw, 42px);
+      font-size: clamp(26px, 3.6vw, 40px);
+      font-weight: 700;
       line-height: 1.1;
-      letter-spacing: -1.5px;
+      letter-spacing: -.02em;
+      text-transform: uppercase;
     }
     .muted { color: var(--muted); }
     .section-head {
@@ -158,151 +196,327 @@
       align-items: end;
       flex-wrap: wrap;
       gap: 20px;
-      margin-bottom: 24px;
+      margin-bottom: 26px;
     }
     .section-head p { margin: 0; }
     .progress-box {
-      min-width: 180px;
+      min-width: 200px;
       color: var(--muted);
       font-size: 13px;
+      font-weight: 600;
     }
     progress {
       width: 100%;
-      height: 7px;
+      height: 6px;
       display: block;
       margin-top: 10px;
+      border: 0;
+      border-radius: 3px;
+      overflow: hidden;
       accent-color: var(--accent);
     }
-    .notice, .account {
-      padding: 20px;
-      border: 1px solid #dcff6238;
-      border-radius: 16px;
-      background: #dcff6207;
-    }
     .notice {
-      margin-bottom: 24px;
+      margin-bottom: 26px;
+      padding: 16px 20px;
+      border: 1px solid #dcff6230;
+      border-radius: 14px;
+      background: #dcff6206;
       color: #d3dda9;
       font-size: 14px;
     }
-    .account h2 { font-size: 25px; letter-spacing: -.7px; }
+
+    /* ---------- Аккаунт ---------- */
+    .account {
+      padding: 26px;
+      border: 1px solid #dcff6230;
+      border-radius: 18px;
+      background:
+        radial-gradient(ellipse 60% 120% at 0% 0%, #dcff6208, transparent 70%),
+        #151515;
+    }
+    .account h2 { font-size: 22px; letter-spacing: -.01em; }
     .account p { margin: 10px 0; overflow-wrap: anywhere; }
-    .steps { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
+    .steps { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 4px; }
     .step {
-      padding: 7px 11px;
+      padding: 7px 12px;
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 999px;
       font-size: 12px;
+      font-weight: 600;
       color: var(--muted);
     }
     .step.done {
       color: var(--accent);
-      border-color: #dcff6250;
+      border-color: #dcff6245;
       background: #dcff6209;
     }
+
+    /* ---------- Карточки номинаций ---------- */
     .grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
+      gap: 16px;
     }
     .card {
+      position: relative;
       display: flex;
       flex-direction: column;
+      min-height: 216px;
       padding: 24px;
       border: 1px solid var(--border);
       border-radius: 20px;
-      background: linear-gradient(145deg, #202020, #171717);
+      background: var(--card);
+      overflow: hidden;
+      transition: transform .25s, border-color .25s;
+    }
+    a.card:hover, .card.votable:hover {
+      transform: translateY(-4px);
+      border-color: #dcff6250;
+    }
+    .ghost {
+      position: absolute;
+      top: 2px;
+      right: 16px;
+      font-size: 68px;
+      font-weight: 900;
+      line-height: 1;
+      color: #dcff6212;
+      pointer-events: none;
+      user-select: none;
     }
     .card-top {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
+      gap: 10px;
+      margin-bottom: 18px;
     }
-    .number { color: #77776e; font: 13px monospace; }
     .badge {
-      padding: 5px 8px;
+      padding: 5px 10px;
       border: 1px solid #414737;
-      border-radius: 6px;
+      border-radius: 999px;
       color: #c2cf9f;
       font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
       text-transform: uppercase;
+    }
+    .badge.mine {
+      border-color: #dcff6245;
+      color: var(--accent);
+      background: #dcff620c;
     }
     .card h3 {
       margin: 0 0 10px;
-      font-size: 26px;
-      line-height: 1.1;
-      letter-spacing: -1px;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -.01em;
       overflow-wrap: anywhere;
     }
-    .description {
-      margin: 0 0 22px;
+    .card .desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card .go {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 16px;
+      color: var(--accent);
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+    .card .go .arr { transition: transform .25s; }
+    a.card:hover .go .arr { transform: translateX(5px); }
+    .card .state {
+      margin-top: auto;
+      padding-top: 16px;
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+    .card.locked { cursor: default; }
+
+    /* Кнопка голосования внутри карточки предложения */
+    .card .vote-btn {
+      margin-top: auto;
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 13px;
+      transition: border-color .2s, background .2s, color .2s;
+    }
+    .card .vote-btn:hover:not(:disabled) { border-color: #dcff6260; }
+    .card .vote-btn.on {
+      border-color: #dcff6250;
+      background: #dcff6212;
+      color: var(--accent);
+    }
+
+    /* ---------- Предложка ---------- */
+    .block-title {
+      margin: 40px 0 18px;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -.01em;
+    }
+    .propose {
+      display: grid;
+      gap: 10px;
+      max-width: 640px;
+      padding: 22px;
+      border: 1px dashed #3d3d3d;
+      border-radius: 18px;
+      background: #14141488;
+    }
+    .propose input, .propose textarea { margin: 0; }
+
+    /* ---------- Страница номинации ---------- */
+    .detail { padding: 44px 0 70px; }
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       color: var(--muted);
       font-size: 14px;
-      white-space: pre-line;
-      overflow-wrap: anywhere;
+      font-weight: 600;
+      transition: color .2s;
     }
-    .candidates { display: grid; gap: 8px; margin-top: auto; }
-    .candidate {
+    .back:hover { color: var(--text); }
+    .detail-head { max-width: 760px; margin: 28px 0 34px; }
+    .detail-meta {
       display: flex;
       align-items: center;
       gap: 12px;
+      margin-bottom: 14px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+    .detail-head h2 {
+      font-size: clamp(28px, 4.4vw, 50px);
+      margin: 0 0 14px;
+    }
+    .detail-head p { margin: 0; font-size: 15.5px; }
+    .cand-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .cand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
       width: 100%;
-      padding: 12px;
+      padding: 14px 16px;
       border: 1px solid #353535;
-      border-radius: 12px;
-      background: #ffffff03;
+      border-radius: 16px;
+      background: var(--card);
       color: var(--text);
       text-align: left;
+      transition: border-color .2s, background .2s;
     }
-    .candidate:hover:not(:disabled) { border-color: #7d8a55; }
-    .candidate[aria-pressed="true"] {
+    .cand:hover:not(:disabled) { border-color: #7d8a55; }
+    .cand[aria-pressed="true"] {
       border-color: var(--accent);
       background: #dcff6210;
-      opacity: 1;
     }
-    .avatar {
+    .cand .avatar {
       display: grid;
       place-items: center;
-      flex: 0 0 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: #30332a;
+      flex: 0 0 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: #2b2f22;
+      color: var(--accent);
+      font-family: Unbounded, Manrope, sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .cand .cand-name {
+      min-width: 0;
+      font-weight: 700;
+      font-size: 15px;
+      overflow-wrap: anywhere;
+    }
+    .cand .pick {
+      margin-left: auto;
+      flex: 0 0 auto;
       color: var(--accent);
       font-size: 13px;
       font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
     }
-    .candidate-name {
-      flex: 1;
-      min-width: 0;
-      font-size: 14px;
-      font-weight: 700;
-      overflow-wrap: anywhere;
-    }
-    .choice { color: var(--accent); font-size: 18px; }
-    .empty {
-      margin-top: auto;
-      padding: 18px;
-      border: 1px dashed #3a3a3a;
-      border-radius: 12px;
+    .cand .pick.off { color: var(--muted); font-weight: 600; }
+    .pending-note {
+      margin-top: 18px;
       color: var(--muted);
       font-size: 13px;
+      line-height: 1.7;
+    }
+    .pending-note b {
+      color: #c2cf9f;
+      font-weight: 700;
+    }
+    .propose-cand {
+      margin-top: 26px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      max-width: 640px;
+    }
+    .propose-cand input { margin: 0; }
+    .empty {
+      padding: 22px;
+      border: 1px dashed #3a3a3a;
+      border-radius: 14px;
+      color: var(--muted);
+      font-size: 14px;
       text-align: center;
     }
+    .empty.big { max-width: 640px; text-align: left; line-height: 1.6; }
+
+    /* ---------- Правила ---------- */
     .rules {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-      margin-top: 24px;
+      gap: 16px;
+      margin-top: 26px;
     }
     .rule {
-      padding: 24px;
+      padding: 26px;
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 18px;
+      background: var(--card);
     }
-    .rule strong { display: block; color: var(--accent); margin-bottom: 8px; }
-    .rule p { margin: 0; color: var(--muted); font-size: 14px; }
+    .rule strong {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--accent);
+      font-family: Unbounded, Manrope, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+    .rule p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+
     footer {
-      padding: 26px 0;
+      padding: 28px 0;
       border-top: 1px solid var(--border);
       color: var(--muted);
       font-size: 12px;
@@ -313,6 +527,8 @@
       flex-wrap: wrap;
       gap: 12px;
     }
+
+    /* ---------- Диалоги ---------- */
     dialog {
       width: min(460px, calc(100% - 28px));
       max-height: calc(100dvh - 32px);
@@ -323,34 +539,106 @@
       background: #191919;
       color: var(--text);
     }
-    dialog::backdrop { background: #000b; backdrop-filter: blur(6px); }
-    #admin-dialog { width: min(560px, calc(100% - 28px)); }
+    dialog::backdrop { background: #000c; backdrop-filter: blur(6px); }
+    #admin-dialog { width: min(640px, calc(100% - 28px)); }
     .dialog-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
     }
-    dialog h2 { margin: 0; font-size: 28px; letter-spacing: -1px; }
+    dialog h2 { margin: 0; font-size: 22px; }
     dialog p { color: var(--muted); font-size: 14px; }
     .close {
       border: 0;
       background: transparent;
       color: var(--muted);
       font-size: 28px;
+      line-height: 1;
     }
-    label { display: block; margin: 16px 0 8px; font-size: 13px; }
+    label { display: block; margin: 16px 0 8px; font-size: 13px; font-weight: 600; }
     input, textarea, select {
       width: 100%;
-      padding: 14px;
+      padding: 13px 14px;
       border: 1px solid #444;
       border-radius: 10px;
       background: #101010;
       color: var(--text);
     }
-    textarea { resize: vertical; min-height: 140px; }
+    textarea { resize: vertical; }
     form .button { width: 100%; margin-top: 16px; }
-    .form-status { min-height: 24px; }
+    .form-status { min-height: 22px; margin: 10px 0 0; font-size: 13px; color: var(--muted); }
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .check input { width: 18px; height: 18px; accent-color: var(--accent); }
+    .admin-inline {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 14px;
+      align-items: end;
+    }
+    .admin-row { display: flex; gap: 10px; margin-top: 14px; }
+    .admin-row .button { flex: 0 0 auto; margin: 0; }
+    .admin-row input { flex: 1; margin: 0; }
+    .admin-list { display: grid; gap: 8px; margin: 12px 0; }
+    .admin-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid #353535;
+      border-radius: 12px;
+      font-size: 14px;
+    }
+    .admin-item .grow { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+    .admin-item .count {
+      color: var(--accent);
+      font-weight: 800;
+      white-space: nowrap;
+      font-size: 13px;
+    }
+    .admin-item button {
+      padding: 7px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .admin-item button:hover:not(:disabled) { border-color: #6a6a60; }
+    .admin-item button.warn { color: #e08a8a; border-color: #4a2c2c; }
+    .admin-tabs {
+      display: flex;
+      gap: 6px;
+      margin: 20px 0 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .admin-tabs .tab {
+      padding: 8px 14px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .admin-tabs .tab.active {
+      border-color: #dcff6245;
+      background: #dcff620c;
+      color: var(--accent);
+    }
+    .block-title:first-child { margin-top: 8px; }
+
     .toast {
       position: fixed;
       z-index: 30;
@@ -367,27 +655,31 @@
       transform: translateX(-50%);
       font-size: 14px;
     }
+
     @media (max-width: 900px) {
       .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .hero-layout { grid-template-columns: 1fr 170px; }
       .rules { grid-template-columns: 1fr; }
+      .cand-list { grid-template-columns: 1fr; }
     }
     @media (max-width: 600px) {
       .wrap { width: calc(100% - 28px); }
-      .nav { min-height: 70px; gap: 8px; }
-      .logo { font-size: 16px; }
+      .nav { min-height: 68px; gap: 8px; }
+      .logo { font-size: 15px; }
       .nav-link { display: none; }
       .nav-right { gap: 6px; }
-      .nav .button { padding: 9px 10px; min-height: 38px; font-size: 12px; }
+      .nav .button { padding: 9px 12px; min-height: 40px; font-size: 12px; }
       .hero { padding: 48px 0 28px; }
       .hero-layout { grid-template-columns: 1fr; }
       .trophy { display: none; }
       .lead { font-size: 15px; }
       .strip { margin-top: 32px; }
       .grid { grid-template-columns: 1fr; }
-      section { padding: 34px 0; }
-      .card { padding: 22px; }
-      dialog { padding: 22px; }
+      section { padding: 36px 0; }
+      .card { min-height: 0; padding: 20px; }
+      dialog { padding: 20px; }
+      .propose-cand { grid-template-columns: 1fr; }
+      .admin-inline { grid-template-columns: 1fr; }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -402,14 +694,14 @@
       <a href="#" class="logo">7FRAGS<span>AWARDS</span></a>
 
       <div class="nav-right">
-        <a class="nav-link" href="#account">Мой аккаунт</a>
+        <a class="nav-link" href="#account">Аккаунт</a>
         <a class="nav-link" href="#nominations">Номинации</a>
 
-        <button id="admin-button" class="button secondary" hidden>
+        <button id="admin-button" class="button secondary sm" hidden>
           Управление
         </button>
 
-        <button id="auth-button" class="button secondary" disabled>
+        <button id="auth-button" class="button secondary sm" disabled>
           Войти
         </button>
       </div>
@@ -417,127 +709,161 @@
   </header>
 
   <main>
-    <div class="hero">
-      <div class="wrap">
-        <div class="hero-layout">
-          <div>
-            <div class="eyebrow">Премия нашего сообщества · 2026</div>
-            <h1>Этот год.<br>Наши <span>легенды.</span></h1>
+    <!-- ======== ГЛАВНАЯ ======== -->
+    <div id="view-home">
+      <div class="hero">
+        <div class="wrap">
+          <div class="hero-layout">
+            <div>
+              <div class="eyebrow">Премия сообщества · 2026</div>
+              <h1>Этот год.<br>Наши <span>легенды.</span></h1>
 
-            <p class="lead">
-              Те самые тиммейты. Те самые завозы.
-              Моменты, которые мы ещё долго будем вспоминать.
-              Выбираем героев 7FragsAwards2026 вместе.
-            </p>
+              <p class="lead">
+                Те самые тиммейты, завозы и вечера.
+                Выбираем героев 7FragsAwards2026 вместе —
+                от номинаций до победителей.
+              </p>
 
-            <div class="actions">
-              <a class="button" href="#nominations">К номинациям ↗</a>
-              <a class="button secondary" href="#account">Участвовать</a>
+              <div class="actions">
+                <a class="button" href="#nominations">К номинациям ↗</a>
+                <a class="button secondary" href="#account">Участвовать</a>
+              </div>
             </div>
+
+            <svg class="trophy" viewBox="0 0 240 300"
+                 fill="none" aria-hidden="true">
+              <path d="M70 35H170V110C170 151 148 175 120 175
+                       C92 175 70 151 70 110V35Z"
+                    fill="currentColor"/>
+              <path d="M70 55H35V90C35 119 51 135 77 135
+                       M170 55H205V90C205 119 189 135 163 135"
+                    stroke="currentColor" stroke-width="14"/>
+              <path d="M120 174V235M85 243H155M70 263H170"
+                    stroke="currentColor" stroke-width="15"/>
+              <path d="M126 59L100 103H122L113 139L145 91H123L126 59Z"
+                    fill="#101010"/>
+            </svg>
           </div>
 
-          <svg class="trophy" viewBox="0 0 240 300"
-               fill="none" aria-hidden="true">
-            <path d="M70 35H170V110C170 151 148 175 120 175
-                     C92 175 70 151 70 110V35Z"
-                  fill="currentColor"/>
-            <path d="M70 55H35V90C35 119 51 135 77 135
-                     M170 55H205V90C205 119 189 135 163 135"
-                  stroke="currentColor" stroke-width="14"/>
-            <path d="M120 174V235M85 243H155M70 263H170"
-                  stroke="currentColor" stroke-width="15"/>
-            <path d="M126 59L100 103H122L113 139L145 91H123L126 59Z"
-                  fill="#101010"/>
-          </svg>
-        </div>
-
-        <div class="strip">
-          <span id="phase">Подключение…</span>
-          <span><strong id="category-count">6</strong> номинаций на сайте</span>
-          <span>Победителей объявим на премии</span>
+          <div class="strip">
+            <span id="phase">Подключение…</span>
+            <span id="strip-count"></span>
+          </div>
         </div>
       </div>
+
+      <section id="account" class="wrap">
+        <div class="account">
+          <h2>Твой пропуск на премию</h2>
+          <p id="account-status" class="muted" role="status">
+            Для участия войди по почте и привяжи Discord.
+          </p>
+
+          <div id="account-steps" class="steps">
+            <span id="email-step" class="step">1. Подтвердить почту</span>
+            <span id="discord-step" class="step">2. Привязать Discord</span>
+            <span id="access-step" class="step">3. Получить допуск</span>
+          </div>
+
+          <p id="account-email" class="muted" hidden></p>
+
+          <div class="actions">
+            <button id="account-login" class="button" disabled>
+              Войти по почте
+            </button>
+
+            <button id="link-discord" class="button discord" hidden>
+              Привязать Discord
+            </button>
+
+            <button id="refresh-account" class="button secondary" hidden>
+              Проверить статус
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="nominations" class="wrap">
+        <div class="section-head">
+          <div>
+            <h2>Номинации</h2>
+            <p class="muted" id="nom-sub"></p>
+          </div>
+
+          <div class="progress-box" id="progress-box">
+            <span id="progress-text"></span>
+            <progress id="progress" max="1" value="0"
+                      aria-label="Прогресс голосования"></progress>
+          </div>
+        </div>
+
+        <div id="notice" class="notice" role="status"></div>
+
+        <div id="cards" class="grid"></div>
+
+        <div id="propose-block" hidden>
+          <h3 class="block-title">Предложи свою номинацию</h3>
+          <form id="propose-form" class="propose">
+            <input id="propose-title" type="text" maxlength="100"
+                   placeholder="Название номинации" required>
+            <textarea id="propose-desc" maxlength="1500" rows="3"
+                      placeholder="Кого и за что награждаем — необязательно"></textarea>
+            <button id="propose-submit" class="button" type="submit">
+              Отправить предложение →
+            </button>
+            <p id="propose-status" class="form-status"></p>
+          </form>
+        </div>
+
+        <div id="proposals-block" hidden>
+          <h3 class="block-title" id="proposals-title"></h3>
+          <div id="proposals-grid" class="grid"></div>
+        </div>
+      </section>
+
+      <section id="rules" class="wrap">
+        <h2>Как это работает</h2>
+        <div class="rules">
+          <div class="rule">
+            <strong>01 / Предложи номинацию</strong>
+            <p>
+              Напиши свою номинацию для премии.
+              Лучшие предложения попадут в финальный список.
+            </p>
+          </div>
+          <div class="rule">
+            <strong>02 / Выбери финал</strong>
+            <p>
+              Голосованием определяем 14 номинаций:
+              6 постоянных и лучшие из предложенных.
+            </p>
+          </div>
+          <div class="rule">
+            <strong>03 / Выбери победителей</strong>
+            <p>
+              В финальных номинациях голосуй за кандидатов.
+              Один голос в каждой, выбор можно изменить до закрытия.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
 
-    <section id="account" class="wrap">
-      <div class="account">
-        <h2>Твой пропуск на премию</h2>
-        <p id="account-status" class="muted" role="status">
-          Для участия войди по почте и привяжи Discord.
-        </p>
+    <!-- ======== СТРАНИЦА НОМИНАЦИИ ======== -->
+    <div id="view-nomination" class="wrap detail" hidden>
+      <a class="back" href="#">← Все номинации</a>
 
-        <div class="steps">
-          <span id="email-step" class="step">1. Подтвердить почту</span>
-          <span id="discord-step" class="step">2. Привязать Discord</span>
-          <span id="access-step" class="step">3. Получить допуск</span>
+      <div class="detail-head">
+        <div class="detail-meta">
+          <span id="detail-number"></span>
+          <span id="detail-badge" class="badge" hidden>Постоянная</span>
         </div>
-
-        <p id="account-email" class="muted" hidden></p>
-
-        <div class="actions">
-          <button id="account-login" class="button" disabled>
-            Войти по почте
-          </button>
-
-          <button id="link-discord" class="button discord" hidden>
-            Подтвердить через Discord
-          </button>
-
-          <button id="refresh-account" class="button secondary" hidden>
-            Проверить статус
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <section id="nominations" class="wrap">
-      <div class="section-head">
-        <div>
-          <h2>Кто заберёт награду?</h2>
-          <p class="muted">Выбирай фаворитов в каждой номинации.</p>
-        </div>
-
-        <div class="progress-box">
-          <span id="progress-text">Твои голоса: 0 из 6</span>
-          <progress id="progress" max="6" value="0"
-                    aria-label="Прогресс голосования"></progress>
-        </div>
+        <h2 id="detail-title"></h2>
+        <p id="detail-desc" class="muted"></p>
       </div>
 
-      <div id="notice" class="notice" role="status">
-        Предпросмотр. Подключи Supabase в настройках файла.
-      </div>
-
-      <div id="cards" class="grid"></div>
-    </section>
-
-    <section class="wrap" id="rules">
-      <h2>Твой голос решает.</h2>
-      <div class="rules">
-        <div class="rule">
-          <strong>01 / Подтверди почту</strong>
-          <p>
-            Пришлём ссылку для регистрации или входа.
-            Придумывать пароль не нужно.
-          </p>
-        </div>
-        <div class="rule">
-          <strong>02 / Привяжи Discord</strong>
-          <p>
-            Авторизация проходит на стороне Discord.
-            Аккаунт закрепляется за твоим участием в премии.
-          </p>
-        </div>
-        <div class="rule">
-          <strong>03 / Выбери лучших</strong>
-          <p>
-            Один голос в каждой номинации.
-            До закрытия голосования выбор можно изменить.
-            Результаты пока скрыты.
-          </p>
-        </div>
-      </div>
-    </section>
+      <div id="detail-body"></div>
+    </div>
   </main>
 
   <footer>
@@ -570,11 +896,6 @@
 
       <p id="auth-status" class="form-status" role="status"></p>
     </form>
-
-    <p>
-      Почта используется для авторизации через Supabase.
-      Не пересылай другим ссылку из письма.
-    </p>
   </dialog>
 
   <dialog id="admin-dialog" aria-labelledby="admin-title">
@@ -584,24 +905,119 @@
               aria-label="Закрыть">×</button>
     </div>
 
-    <p>Редактирование названий и описаний не сбрасывает голоса.</p>
+    <div class="admin-tabs">
+      <button class="tab active" data-tab="categories" type="button">
+        Номинации
+      </button>
+      <button class="tab" data-tab="cands" type="button">
+        Кандидаты
+      </button>
+      <button class="tab" data-tab="moderation" type="button">
+        Предложенное
+      </button>
+      <button class="tab" data-tab="settings" type="button">
+        Этап
+      </button>
+    </div>
 
-    <form id="admin-form">
+    <div id="admin-tab-categories">
       <label for="admin-category">Номинация</label>
-      <select id="admin-category" required></select>
+      <select id="admin-category"></select>
 
       <label for="admin-name">Название</label>
-      <input id="admin-name" type="text" maxlength="100" required>
+      <input id="admin-name" type="text" maxlength="100">
 
       <label for="admin-description">Описание</label>
-      <textarea id="admin-description" maxlength="1500" rows="5"></textarea>
+      <textarea id="admin-description" maxlength="1500" rows="4"></textarea>
 
-      <button id="admin-save" class="button" type="submit">
-        Сохранить изменения
-      </button>
+      <div class="admin-inline">
+        <div>
+          <label for="admin-position">Позиция</label>
+          <input id="admin-position" type="number" min="0" step="1">
+        </div>
+        <label class="check">
+          <input id="admin-permanent" type="checkbox"> Постоянная
+        </label>
+      </div>
+
+      <div class="admin-row">
+        <button id="admin-save" class="button" type="button">
+          Сохранить
+        </button>
+        <button id="admin-delete" class="button danger" type="button">
+          Удалить
+        </button>
+      </div>
+
+      <div class="admin-row">
+        <button id="admin-new" class="button secondary" type="button"
+                style="flex:1">
+          + Новая номинация
+        </button>
+      </div>
 
       <p id="admin-status" class="form-status" role="status"></p>
-    </form>
+    </div>
+
+    <div id="admin-tab-cands" hidden>
+      <label for="admin-cand-category">Номинация</label>
+      <select id="admin-cand-category"></select>
+
+      <div id="admin-cand-list" class="admin-list"></div>
+
+      <label for="admin-cand-name">Добавить кандидата</label>
+      <div class="admin-row">
+        <input id="admin-cand-name" type="text" maxlength="100"
+               placeholder="Имя кандидата">
+        <button id="admin-cand-add" class="button" type="button">
+          Добавить
+        </button>
+      </div>
+
+      <p id="admin-cand-status" class="form-status" role="status"></p>
+    </div>
+
+    <div id="admin-tab-moderation" hidden>
+      <h3 class="block-title">Номинации от участников</h3>
+      <div id="admin-proposals" class="admin-list"></div>
+
+      <h3 class="block-title">Кандидаты от участников</h3>
+      <div id="admin-cand-proposals" class="admin-list"></div>
+
+      <div class="admin-row">
+        <button id="admin-mod-refresh" class="button secondary" type="button"
+                style="flex:1">
+          Обновить
+        </button>
+      </div>
+
+      <p id="admin-mod-status" class="form-status" role="status"></p>
+    </div>
+
+    <div id="admin-tab-settings" hidden>
+      <label for="admin-stage">Этап премии</label>
+      <select id="admin-stage">
+        <option value="proposals">Этап 1 · Приём предложений</option>
+        <option value="nominations">Этап 2 · Выбор номинаций</option>
+        <option value="candidates">Этап 3 · Голосование за кандидатов</option>
+      </select>
+
+      <label class="check">
+        <input id="admin-voting-open" type="checkbox"> Голосование открыто
+      </label>
+
+      <label for="admin-final-count">Финальное число номинаций</label>
+      <input id="admin-final-count" type="number" min="1" step="1">
+
+      <div class="admin-row">
+        <button id="admin-settings-save" class="button" type="button"
+                style="flex:1">
+          Применить
+        </button>
+      </div>
+
+      <p id="admin-settings-status" class="form-status" role="status"></p>
+    </div>
   </dialog>
 
   <div id="toast" class="toast" role="status" hidden></div>
@@ -613,7 +1029,6 @@
     // ВСТАВЬ ДАННЫЕ СВОЕГО ПРОЕКТА SUPABASE
     // Только Publishable key, НЕ secret/service_role.
     // ==============================================
-    // Базовый URL проекта БЕЗ /rest/v1/ — supabase-js добавит пути сам.
     const SUPABASE_URL = "https://eifumfushymxopgjefun.supabase.co";
     const SUPABASE_KEY = "sb_publishable_VpEoLwSZVrNynxthUOa__w_eKlbbJWY";
 
@@ -677,19 +1092,30 @@
     let db = null;
     let connected = false;
     let votingOpen = false;
+    let stage = "proposals";          // proposals | nominations | candidates
+    let finalCount = 14;
+
     let user = null;
     let isAdmin = false;
     let checking = false;
     let linking = false;
     let savingVote = false;
-    let savingAdmin = false;
     let access = { eligible: false, reason: "signed_out" };
 
     let categories = previewCategories;
     let candidates = [];
-    let votes = new Map();
+    let votes = new Map();            // category_id -> candidate_id (этап 3)
+    let proposals = [];               // предложенные номинации (этапы 1–2)
+    let myProposalVotes = new Set();  // id предложений, за которые голосовал
+    let pendingCandidates = [];       // кандидаты на модерации (для деталей)
+
+    let adminTab = "categories";
+    let adminEditingId = null;        // id номинации в админке или "new"
+    let adminCandCategoryId = null;
+    let savingAdmin = false;
 
     let accountVersion = 0;
+    let detailVersion = 0;
     let toastTimer;
 
     function make(tag, className, text) {
@@ -708,19 +1134,45 @@
       }, 6500);
     }
 
+    function initials(name) {
+      return name.trim().split(/\s+/).slice(0, 2)
+        .map((word) => Array.from(word)[0] || "")
+        .join("").toUpperCase();
+    }
+
+    // ---------- Роутинг: главная / страница номинации ----------
+    function currentNominationId() {
+      const match = location.hash.match(/^#nom-(.+)$/);
+      if (!match) return null;
+      const found = categories.find(
+        (c) => String(c.id) === String(match[1])
+      );
+      return found || null;
+    }
+
+    function goHome() {
+      if (location.hash && location.hash !== "#") {
+        history.replaceState(null, "", location.pathname + location.search);
+        render();
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    window.addEventListener("hashchange", render);
+
     function showLogin() {
       if (!connected) return;
       $("auth-status").textContent = "";
       if (!$("auth-dialog").open) $("auth-dialog").showModal();
     }
 
+    // ---------- Аккаунт ----------
     function renderAccount() {
       const reason = access.reason;
       const emailOK = Boolean(
         user && !["signed_out", "checking", "error", "email_required"]
           .includes(reason)
       );
-
       const discordOK = Boolean(
         user && ["binding_required", "ready"].includes(reason)
       );
@@ -728,6 +1180,9 @@
       $("email-step").classList.toggle("done", emailOK);
       $("discord-step").classList.toggle("done", discordOK);
       $("access-step").classList.toggle("done", access.eligible);
+
+      // Шаги показываем только гостям — после входа блок чистый.
+      $("account-steps").hidden = Boolean(user);
 
       $("account-login").hidden = Boolean(user);
       $("account-login").disabled = !connected;
@@ -739,159 +1194,413 @@
 
       $("refresh-account").hidden = !user;
       $("refresh-account").disabled =
-        !connected || checking || linking || savingVote || savingAdmin;
+        !connected || checking || linking || savingVote;
 
       $("link-discord").hidden =
         !user || reason !== "discord_required";
       $("link-discord").disabled =
         !connected || checking || linking;
 
-      let message = "Для участия войди по почте и привяжи Discord.";
+      let message = "Войди по почте, чтобы участвовать в премии.";
 
       if (!connected) {
         message = "Предпросмотр сайта. Авторизация пока недоступна.";
       } else if (checking || reason === "checking") {
-        message = "Проверяем почту, Discord и допуск к голосованию…";
+        message = "Проверяем аккаунт и допуск к голосованию…";
       } else if (user) {
         const messages = {
           email_required:
             "Нужна регистрация по почте с подтверждением. " +
-            "Выйди и войди по ссылке, отправленной на твою почту.",
+            "Войди по ссылке, отправленной на твою почту.",
           discord_required:
-            "Почта подтверждена. Теперь привяжи Discord. " +
-            "Он будет закреплён за твоим участием в премии.",
+            "Почта подтверждена. Осталось привязать Discord — " +
+            "он закрепляется за твоим участием.",
           binding_required:
             "Discord найден. Нажми «Проверить статус», " +
             "чтобы завершить подтверждение.",
           discord_changed:
-            "К аккаунту подключён не тот Discord, который был закреплён " +
-            "ранее. Для восстановления обратись к организатору.",
+            "К аккаунту подключён не тот Discord. " +
+            "Обратись к организатору.",
           discord_used:
             "Этот Discord уже закреплён за другим участником. " +
-            "Войди в первоначальный аккаунт или обратись к организатору.",
+            "Обратись к организатору.",
           ready:
-            `Discord подтверждён${access.discord_name
-              ? ": " + access.discord_name
-              : ""}. Допуск получен!`,
+            `Допуск получен${access.discord_name
+              ? " · " + access.discord_name
+              : ""}. Участвуй!`,
           error:
             "Не удалось проверить допуск. Нажми «Проверить статус»."
         };
-
         message = messages[reason] || "Обнови статус аккаунта.";
       }
 
       $("account-status").textContent = message;
     }
 
-    function render() {
+    // ---------- Шапка-статус ----------
+    function renderStrip() {
+      const phase = $("phase");
+      const count = $("strip-count");
+
+      if (!connected) {
+        phase.textContent = "Предпросмотр сайта";
+        count.textContent = "";
+        return;
+      }
+
+      const labels = {
+        proposals: "● Этап 1 · Приём предложений",
+        nominations: "● Этап 2 · Выбор номинаций",
+        candidates: votingOpen
+          ? "● Этап 3 · Голосование"
+          : "Этап 3 · Скоро"
+      };
+      phase.textContent = labels[stage] || "Подключение…";
+      phase.classList.toggle("live", true);
+
+      const counts = {
+        proposals: `${categories.length} постоянных номинаций`,
+        nominations: `Финал — ${finalCount} номинаций`,
+        candidates: `Победители — на церемонии`
+      };
+      count.textContent = counts[stage] || "";
+    }
+
+    // ---------- Главная ----------
+    function renderHome() {
       renderAccount();
-      $("cards").replaceChildren();
+      renderStrip();
 
-      const count = categories.length;
-      const completed = categories.filter(
-        (category) => votes.has(category.id)
-      ).length;
+      const cards = $("cards");
+      cards.replaceChildren();
 
-      $("category-count").textContent = count;
-      $("progress-text").textContent =
-        `Твои голоса: ${completed} из ${count}`;
-      $("progress").max = Math.max(count, 1);
-      $("progress").value = completed;
+      // ---- Прогресс и подзаголовок по этапам ----
+      const progressBox = $("progress-box");
+      const progress = $("progress");
+      const progressText = $("progress-text");
+
+      if (stage === "nominations") {
+        $("nom-sub").textContent =
+          "Голосуем за номинации, которые войдут в финальный список.";
+        progressBox.hidden = false;
+        progress.max = Math.max(proposals.length, 1);
+        progress.value = myProposalVotes.size;
+        progressText.textContent =
+          `Поддержано предложений: ${myProposalVotes.size}`;
+      } else if (stage === "candidates") {
+        $("nom-sub").textContent =
+          "Один голос в каждой номинации. Результаты скрыты.";
+        progressBox.hidden = false;
+        const done = categories.filter((c) => votes.has(c.id)).length;
+        progress.max = Math.max(categories.length, 1);
+        progress.value = done;
+        progressText.textContent =
+          `Твои голоса: ${done} из ${categories.length}`;
+      } else {
+        $("nom-sub").textContent =
+          "Шесть постоянных — уже в финале. Остальные предложишь ты.";
+        progressBox.hidden = true;
+      }
+
+      // ---- Notice ----
+      let noticeText = "";
+      if (!connected) {
+        noticeText = "Предпросмотр. Подключи Supabase, чтобы сайт заработал.";
+      } else if (stage === "proposals") {
+        noticeText = user
+          ? "Придумай свою номинацию — лучшее попадёт в финальный список."
+          : "Войди, чтобы предложить свою номинацию.";
+      } else if (stage === "nominations") {
+        noticeText = !user
+          ? "Войди, чтобы поддерживать номинации."
+          : !access.eligible
+            ? "Сначала заверши подтверждение в блоке «Твой пропуск на премию»."
+            : "Поддержи номинации, которые должны попасть в финальный список.";
+      } else if (stage === "candidates") {
+        noticeText = !votingOpen
+          ? "Голосование за кандидатов скоро откроется."
+          : !user
+            ? "Войди, чтобы голосовать за кандидатов."
+            : !access.eligible
+              ? "Сначала заверши подтверждение в блоке «Твой пропуск на премию»."
+              : "Нажми на номинацию и выбери победителя.";
+      }
+      $("notice").textContent = noticeText;
+      $("notice").hidden = !noticeText;
+
+      // ---- Карточки категорий ----
+      const sorted = [...categories].sort(
+        (a, b) => (a.position ?? 0) - (b.position ?? 0)
+      );
+
+      sorted.forEach((category, index) => {
+        cards.append(categoryCard(category, index));
+      });
+
+      // ---- Предложка ----
+      const showProposeBlock = stage === "proposals";
+      $("propose-block").hidden = !showProposeBlock;
+      $("propose-submit").disabled = !connected || (user && false);
+      $("propose-submit").textContent = user
+        ? "Отправить предложение →"
+        : "Войти и предложить →";
+
+      const showProposals = stage !== "candidates" && (
+        (stage === "proposals" && proposals.length > 0) ||
+        stage === "nominations"
+      );
+      $("proposals-block").hidden = !showProposals;
+      $("proposals-grid").replaceChildren();
+
+      if (showProposals) {
+        $("proposals-title").textContent = stage === "proposals"
+          ? "Уже предложено"
+          : "Голосование за номинации";
+
+        proposals.forEach((proposal) => {
+          $("proposals-grid").append(proposalCard(proposal));
+        });
+      }
+    }
+
+    function categoryCard(category, index) {
+      const card = make("a", "card");
+      card.href = "#nom-" + category.id;
+
+      card.append(make("span", "ghost", String(index + 1).padStart(2, "0")));
+
+      const top = make("div", "card-top");
+      if (category.is_permanent) {
+        top.append(make("span", "badge", "Постоянная"));
+      }
+      card.append(top);
+
+      card.append(make("h3", "", category.title));
+      if (category.description) {
+        card.append(make("p", "desc", category.description));
+      }
+
+      if (stage === "candidates") {
+        const chosen = votes.has(category.id);
+        const go = make("span", "go");
+        go.append(
+          make("span", "", chosen ? "Выбрано" : "Сделай выбор"),
+          make("span", "arr", "→")
+        );
+        card.append(go);
+      } else if (stage === "nominations" && category.is_permanent) {
+        card.append(make("span", "state", "Уже в финальном списке"));
+      } else {
+        const go = make("span", "go");
+        go.append(make("span", "", "Подробнее"), make("span", "arr", "→"));
+        card.append(go);
+      }
+
+      return card;
+    }
+
+    function proposalCard(proposal) {
+      const card = make("article", "card votable");
+      card.append(
+        make("span", "ghost", String(
+          proposals.indexOf(proposal) + 1
+        ).padStart(2, "0"))
+      );
+
+      const top = make("div", "card-top");
+      if (user && proposal.author_id === user.id) {
+        top.append(make("span", "badge mine", "Твоё предложение"));
+      }
+      card.append(top);
+
+      card.append(make("h3", "", proposal.title));
+      if (proposal.description) {
+        card.append(make("p", "desc", proposal.description));
+      }
+
+      if (stage === "nominations") {
+        const voted = myProposalVotes.has(proposal.id);
+        const button = make("button", "vote-btn");
+        button.type = "button";
+        button.classList.toggle("on", voted);
+        button.disabled =
+          !connected || !votingOpen || checking;
+        button.textContent = voted
+          ? "✓ Поддержано"
+          : "Поддержать";
+        button.addEventListener("click", () => {
+          toggleProposalVote(proposal.id);
+        });
+        card.append(button);
+      }
+
+      return card;
+    }
+
+    // ---------- Страница номинации ----------
+    async function renderDetail(category) {
+      const version = ++detailVersion;
+
+      const index = [...categories]
+        .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+        .findIndex((c) => c.id === category.id);
+
+      $("detail-number").textContent =
+        "Номинация " + String(index + 1).padStart(2, "0");
+      $("detail-badge").hidden = !category.is_permanent;
+      $("detail-title").textContent = category.title;
+      $("detail-desc").textContent = category.description || "";
+
+      const body = $("detail-body");
+      body.replaceChildren();
+
+      if (stage !== "candidates") {
+        const note = make("div", "empty big");
+        note.textContent = category.is_permanent
+          ? "Постоянная номинация — уже в финальном списке. " +
+            "Кандидаты появятся на этапе голосования."
+          : "Кандидаты появятся, когда сформируется финальный список номинаций.";
+        body.append(note);
+        return;
+      }
+
+      // --- Этап 3: кандидаты ---
+      const list = candidates.filter(
+        (c) => String(c.category_id) === String(category.id)
+      );
+
+      const container = make("div", "cand-list");
+
+      if (!list.length) {
+        const empty = make("div", "empty");
+        empty.textContent = "Кандидатов пока нет. Предложи своего ниже.";
+        container.append(empty);
+      }
+
+      list.forEach((candidate) => {
+        const selected = votes.get(category.id) === candidate.id;
+        const button = make("button", "cand");
+
+        button.type = "button";
+        button.disabled =
+          !connected || !votingOpen || savingVote || checking;
+        button.setAttribute("aria-pressed", String(selected));
+
+        button.append(
+          make("span", "avatar", initials(candidate.name)),
+          make("span", "cand-name", candidate.name),
+          make("span", "pick" + (selected ? "" : " off"),
+               selected ? "Выбран" : "Выбрать")
+        );
+
+        button.addEventListener("click", () => {
+          saveVote(category.id, candidate.id);
+        });
+
+        container.append(button);
+      });
+
+      body.append(container);
+
+      // --- Кандидаты на модерации ---
+      const mine = pendingCandidates.filter(
+        (p) => String(p.category_id) === String(category.id)
+      );
+      if (mine.length) {
+        const note = make("p", "pending-note");
+        note.append(make("b", "", "На модерации: "));
+        note.append(
+          document.createTextNode(mine.map((p) => p.name).join(" · "))
+        );
+        body.append(note);
+      }
+
+      // --- Форма «предложить своего» ---
+      const form = make("form", "propose-cand");
+      const input = make("input");
+      input.type = "text";
+      input.maxLength = 100;
+      input.required = true;
+      input.placeholder = user
+        ? "Имя кандидата"
+        : "Войди, чтобы предложить кандидата";
+      input.disabled = !user;
+      const submit = make("button", "button");
+      submit.type = "submit";
+      submit.textContent = "Предложить";
+      form.append(input, submit);
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const name = input.value.trim();
+        if (!name) return;
+        if (!user) return showLogin();
+
+        submit.disabled = true;
+        const { error } = await db
+          .from("candidate_proposals")
+          .insert({
+            category_id: category.id,
+            name,
+            author_id: user.id
+          });
+
+        if (error) {
+          console.error(error);
+          notify("Не удалось отправить предложение.");
+          submit.disabled = false;
+          return;
+        }
+
+        input.value = "";
+        submit.disabled = false;
+        notify("Кандидат отправлен на модерацию. Спасибо!");
+        pendingCandidates = await loadPendingCandidates(category.id);
+        if (version === detailVersion) renderDetail(category);
+      });
+
+      body.append(form);
+    }
+
+    async function loadPendingCandidates(categoryId) {
+      if (!connected || !user) return [];
+      try {
+        const { data, error } = await db
+          .from("candidate_proposals")
+          .select("id,category_id,name")
+          .eq("category_id", categoryId)
+          .eq("status", "pending");
+        if (error) throw error;
+        return data || [];
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    }
+
+    // ---------- Общий render ----------
+    function render() {
+      const category = currentNominationId();
+
+      $("view-home").hidden = Boolean(category);
+      $("view-nomination").hidden = !category;
+
+      if (category) {
+        renderDetail(category);
+      } else {
+        renderHome();
+      }
 
       $("auth-button").textContent = user ? "Выйти" : "Войти";
       $("auth-button").disabled =
-        !connected || checking || linking || savingVote || savingAdmin;
+        !connected || checking || linking || savingVote;
 
       $("admin-button").hidden = !(connected && user && isAdmin);
-      $("admin-button").disabled = savingAdmin;
 
-      if ((!user || !isAdmin) && $("admin-dialog").open) {
-        $("admin-dialog").close();
-      }
-
-      $("phase").textContent = !connected
-        ? "Предпросмотр сайта"
-        : votingOpen
-          ? "● Голосование открыто"
-          : "Голосование закрыто";
-
-      if (connected) {
-        $("notice").textContent = !votingOpen
-          ? "Голоса пока не принимаются. Подтвердить аккаунт можно уже сейчас."
-          : !user
-            ? "Для участия войди по почте и привяжи Discord."
-            : !access.eligible
-              ? "Сначала заверши подтверждение в блоке «Твой пропуск на премию»."
-              : "Нажми на кандидата, чтобы отдать или изменить голос. Результаты скрыты.";
-      }
-
-      categories.forEach((category, index) => {
-        const card = make("article", "card");
-        const top = make("div", "card-top");
-
-        top.append(
-          make("span", "number", String(index + 1).padStart(2, "0"))
-        );
-
-        if (category.is_permanent) {
-          top.append(make("span", "badge", "Постоянная"));
-        }
-
-        card.append(
-          top,
-          make("h3", "", category.title),
-          make("p", "description", category.description)
-        );
-
-        const list = candidates.filter(
-          (candidate) => candidate.category_id === category.id
-        );
-
-        if (!list.length) {
-          card.append(make("div", "empty", "Кандидаты появятся здесь"));
-        } else {
-          const container = make("div", "candidates");
-
-          list.forEach((candidate) => {
-            const selected = votes.get(category.id) === candidate.id;
-            const button = make("button", "candidate");
-
-            button.type = "button";
-            button.disabled =
-              !connected || !votingOpen || savingVote || checking;
-            button.setAttribute("aria-pressed", String(selected));
-            button.setAttribute(
-              "aria-label",
-              selected
-                ? `${candidate.name}: твой голос`
-                : `Проголосовать за ${candidate.name}`
-            );
-
-            const initials = candidate.name.trim()
-              .split(/\s+/).slice(0, 2)
-              .map((word) => Array.from(word)[0] || "")
-              .join("").toUpperCase();
-
-            button.append(
-              make("span", "avatar", initials),
-              make("span", "candidate-name", candidate.name),
-              make("span", "choice", selected ? "✓" : "↗")
-            );
-
-            button.addEventListener("click", () => {
-              saveVote(category.id, candidate.id);
-            });
-
-            container.append(button);
-          });
-
-          card.append(container);
-        }
-
-        $("cards").append(card);
-      });
+      if (!isAdmin && $("admin-dialog").open) $("admin-dialog").close();
     }
 
+    // ---------- Данные аккаунта ----------
     async function refreshAccount() {
       const version = ++accountVersion;
       const currentUserId = user?.id;
@@ -908,27 +1617,28 @@
           return;
         }
 
-        const [voteResult, adminResult, accessResult] = await Promise.all([
-          db.from("votes")
-            .select("category_id,candidate_id")
-            .eq("user_id", currentUserId),
+        const [voteResult, adminResult, accessResult, pvResult] =
+          await Promise.all([
+            db.from("votes")
+              .select("category_id,candidate_id")
+              .eq("user_id", currentUserId),
 
-          db.from("admin_users")
-            .select("user_id")
-            .eq("user_id", currentUserId)
-            .maybeSingle(),
+            db.from("admin_users")
+              .select("user_id")
+              .eq("user_id", currentUserId)
+              .maybeSingle(),
 
-          db.rpc("voter_access")
-        ]);
+            db.rpc("voter_access"),
 
-        if (
-          version !== accountVersion ||
-          user?.id !== currentUserId
-        ) return;
+            db.from("proposal_votes")
+              .select("proposal_id")
+              .eq("user_id", currentUserId)
+          ]);
+
+        if (version !== accountVersion || user?.id !== currentUserId) return;
 
         if (voteResult.error) {
           console.error(voteResult.error);
-          notify("Не удалось загрузить сохранённые голоса.");
         } else {
           votes = new Map(
             voteResult.data.map((vote) => [
@@ -943,6 +1653,12 @@
           isAdmin = Boolean(adminResult.data);
         }
 
+        if (pvResult.error) {
+          console.error(pvResult.error);
+        } else {
+          myProposalVotes = new Set(pvResult.data.map((row) => row.proposal_id));
+        }
+
         if (accessResult.error) throw accessResult.error;
 
         let nextAccess = accessResult.data;
@@ -950,21 +1666,17 @@
         if (nextAccess.reason === "binding_required") {
           const confirmation = await db.rpc("confirm_discord_voter");
 
-          if (
-            version !== accountVersion ||
-            user?.id !== currentUserId
-          ) return;
+          if (version !== accountVersion || user?.id !== currentUserId) return;
 
           if (confirmation.error) throw confirmation.error;
           nextAccess = confirmation.data;
         }
 
         access = nextAccess;
+
+        await loadProposals(version);
       } catch (error) {
-        if (
-          version !== accountVersion ||
-          user?.id !== currentUserId
-        ) return;
+        if (version !== accountVersion || user?.id !== currentUserId) return;
 
         console.error(error);
         access = { eligible: false, reason: "error" };
@@ -977,6 +1689,25 @@
       }
     }
 
+    async function loadProposals(version) {
+      try {
+        const { data, error } = await db
+          .from("category_proposals")
+          .select("id,title,description,author_id")
+          .eq("status", "pending")
+          .order("created_at");
+
+        if (version !== accountVersion) return;
+        if (error) throw error;
+        proposals = data || [];
+      } catch (error) {
+        if (version !== accountVersion) return;
+        console.error(error);
+        proposals = [];
+      }
+    }
+
+    // ---------- Голосование за кандидатов ----------
     async function saveVote(categoryId, candidateId) {
       if (!connected || !votingOpen || savingVote || checking) return;
       if (!user) return showLogin();
@@ -1011,16 +1742,87 @@
         }
       } catch (error) {
         console.error(error);
-        notify(
-          "Голос не сохранён. Возможно, голосование закрыто " +
-          "или нужно повторно проверить допуск."
-        );
+        notify("Голос не сохранён. Попробуй ещё раз.");
       } finally {
         savingVote = false;
         render();
       }
     }
 
+    // ---------- Голосование за номинации ----------
+    async function toggleProposalVote(proposalId) {
+      if (!connected) return;
+      if (!user) return showLogin();
+      if (!votingOpen) return notify("Голосование закрыто.");
+      if (!access.eligible) {
+        $("account").scrollIntoView({ behavior: "smooth" });
+        notify("Для голосования сначала подтверди почту и Discord.");
+        return;
+      }
+
+      const voted = myProposalVotes.has(proposalId);
+
+      let error;
+      if (voted) {
+        ({ error } = await db.from("proposal_votes")
+          .delete()
+          .eq("proposal_id", proposalId)
+          .eq("user_id", user.id));
+      } else {
+        ({ error } = await db.from("proposal_votes")
+          .insert({ proposal_id: proposalId, user_id: user.id }));
+      }
+
+      if (error) {
+        console.error(error);
+        return notify("Не удалось учесть голос. Попробуй ещё раз.");
+      }
+
+      if (voted) myProposalVotes.delete(proposalId);
+      else myProposalVotes.add(proposalId);
+
+      render();
+    }
+
+    // ---------- Предложение номинации ----------
+    $("propose-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!connected) return notify("Предпросмотр. Подключи Supabase.");
+      if (!user) return showLogin();
+
+      const title = $("propose-title").value.trim();
+      const description = $("propose-desc").value.trim();
+      if (!title) return;
+
+      const button = $("propose-submit");
+      button.disabled = true;
+      $("propose-status").textContent = "Отправляем…";
+
+      try {
+        const { error } = await db.from("category_proposals").insert({
+          title,
+          description,
+          author_id: user.id
+        });
+
+        if (error) throw error;
+
+        $("propose-title").value = "";
+        $("propose-desc").value = "";
+        $("propose-status").textContent = "";
+        notify("Номинация отправлена. Спасибо!");
+        await loadProposals(accountVersion);
+        render();
+      } catch (error) {
+        console.error(error);
+        $("propose-status").textContent =
+          "Не удалось отправить. Попробуй позже.";
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    // ---------- Авторизация ----------
     $("account-login").addEventListener("click", showLogin);
 
     $("auth-button").addEventListener("click", async () => {
@@ -1036,6 +1838,7 @@
         checking = false;
         access = { eligible: false, reason: "signed_out" };
         votes = new Map();
+        myProposalVotes = new Set();
 
         render();
         notify("Ты вышел из аккаунта.");
@@ -1094,8 +1897,6 @@
       render();
 
       try {
-        // Привязываем Discord к текущему аккаунту.
-        // Это НЕ отдельная регистрация через signInWithOAuth.
         const { error } = await db.auth.linkIdentity({
           provider: "discord",
           options: {
@@ -1121,38 +1922,543 @@
       await refreshAccount();
     });
 
-    function fillAdminFields() {
+    // ==========================================================
+    //                          АДМИНКА
+    // ==========================================================
+    function setAdminTab(tab) {
+      adminTab = tab;
+      document.querySelectorAll("#admin-dialog .tab").forEach((node) => {
+        node.classList.toggle("active", node.dataset.tab === tab);
+      });
+      ["categories", "cands", "moderation", "settings"].forEach((name) => {
+        $("admin-tab-" + name).hidden = name !== tab;
+      });
+
+      if (tab === "categories") fillAdminCategoryForm();
+      if (tab === "cands") fillAdminCandTab();
+      if (tab === "moderation") loadModeration();
+      if (tab === "settings") fillAdminSettings();
+    }
+
+    function fillAdminSelects() {
+      ["admin-category", "admin-cand-category"].forEach((id) => {
+        const select = $(id);
+        select.replaceChildren();
+        [...categories]
+          .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+          .forEach((category) => {
+            const option = document.createElement("option");
+            option.value = String(category.id);
+            option.textContent = category.title;
+            select.append(option);
+          });
+      });
+    }
+
+    // --- Вкладка «Номинации» ---
+    function fillAdminCategoryForm() {
+      const select = $("admin-category");
+      const id = select.value;
+      adminEditingId = adminEditingId === "new" ? "new" : id;
+
       const category = categories.find(
-        (item) => item.id === $("admin-category").value
+        (c) => String(c.id) === String(adminEditingId)
       );
 
       $("admin-name").value = category?.title ?? "";
       $("admin-description").value = category?.description ?? "";
+      $("admin-position").value = category?.position ?? "";
+      $("admin-permanent").checked = Boolean(category?.is_permanent);
       $("admin-status").textContent = "";
-      $("admin-save").disabled = !category || savingAdmin;
+      $("admin-save").disabled = !category;
+      $("admin-delete").disabled = !category;
     }
 
-    function fillAdminOptions(selectedId) {
-      const select = $("admin-category");
-      select.replaceChildren();
+    $("admin-category").addEventListener("change", () => {
+      adminEditingId = null;
+      fillAdminCategoryForm();
+    });
 
-      categories.forEach((category) => {
-        const option = document.createElement("option");
-        option.value = category.id;
-        option.textContent = category.title;
-        select.append(option);
-      });
+    $("admin-new").addEventListener("click", () => {
+      adminEditingId = "new";
+      $("admin-name").value = "";
+      $("admin-description").value = "";
+      $("admin-position").value = String(categories.length);
+      $("admin-permanent").checked = false;
+      $("admin-status").textContent = "Заполни поля новой номинации.";
+      $("admin-save").disabled = false;
+      $("admin-delete").disabled = true;
+    });
 
-      if (categories.some((category) => category.id === selectedId)) {
-        select.value = selectedId;
+    $("admin-save").addEventListener("click", async () => {
+      if (!connected || !isAdmin || savingAdmin) return;
+
+      const title = $("admin-name").value.trim();
+      const description = $("admin-description").value.trim();
+      const position = Number($("admin-position").value) || 0;
+      const is_permanent = $("admin-permanent").checked;
+
+      if (!title) {
+        $("admin-status").textContent = "Заполни название.";
+        return;
       }
 
-      fillAdminFields();
+      savingAdmin = true;
+      $("admin-save").disabled = true;
+      $("admin-status").textContent = "Сохраняем…";
+
+      try {
+        const payload = { title, description, position, is_permanent };
+
+        if (adminEditingId === "new") {
+          const { data, error } = await db.from("categories")
+            .insert({ id: crypto.randomUUID(), ...payload })
+            .select("id,title,description,is_permanent,position")
+            .single();
+          if (error) throw error;
+          categories = [...categories, data];
+          adminEditingId = String(data.id);
+        } else {
+          const { data, error } = await db.from("categories")
+            .update(payload)
+            .eq("id", adminEditingId)
+            .select("id,title,description,is_permanent,position")
+            .single();
+          if (error) throw error;
+          categories = categories.map(
+            (c) => String(c.id) === String(data.id) ? data : c
+          );
+        }
+
+        fillAdminSelects();
+        $("admin-category").value = String(adminEditingId);
+        $("admin-status").textContent = "Изменения сохранены!";
+        notify("Номинация обновлена.");
+        render();
+      } catch (error) {
+        console.error(error);
+        $("admin-status").textContent =
+          "Не удалось сохранить. Проверь права и соединение.";
+      } finally {
+        savingAdmin = false;
+        $("admin-save").disabled = false;
+      }
+    });
+
+    $("admin-delete").addEventListener("click", async () => {
+      if (!connected || !isAdmin || savingAdmin) return;
+      if (adminEditingId === "new" || !adminEditingId) return;
+
+      const accepted = window.confirm(
+        "Удалить номинацию вместе с кандидатами и голосами? Отменить будет нельзя."
+      );
+      if (!accepted) return;
+
+      savingAdmin = true;
+      $("admin-delete").disabled = true;
+      $("admin-status").textContent = "Удаляем…";
+
+      try {
+        // Порядок важен: сначала голоса, потом кандидаты,
+        // у внешних ключей в базе нет каскадного удаления.
+        await db.from("votes")
+          .delete()
+          .eq("category_id", adminEditingId);
+        await db.from("candidates")
+          .delete()
+          .eq("category_id", adminEditingId);
+        const { error } = await db.from("categories")
+          .delete()
+          .eq("id", adminEditingId);
+        if (error) throw error;
+
+        categories = categories.filter(
+          (c) => String(c.id) !== String(adminEditingId)
+        );
+        adminEditingId = null;
+
+        fillAdminSelects();
+        $("admin-status").textContent = "Номинация удалена.";
+        notify("Номинация удалена.");
+        render();
+      } catch (error) {
+        console.error(error);
+        $("admin-status").textContent =
+          "Не удалось удалить. Проверь связи в базе и права.";
+      } finally {
+        savingAdmin = false;
+        $("admin-delete").disabled = false;
+      }
+    });
+
+    // --- Вкладка «Кандидаты» ---
+    function fillAdminCandTab() {
+      const select = $("admin-cand-category");
+      if (!select.value && categories.length) {
+        select.value = String(categories[0].id);
+      }
+      adminCandCategoryId = select.value || null;
+      renderAdminCandList();
     }
 
+    $("admin-cand-category").addEventListener("change", fillAdminCandTab);
+
+    function renderAdminCandList() {
+      const list = $("admin-cand-list");
+      list.replaceChildren();
+
+      const rows = candidates.filter(
+        (c) => String(c.category_id) === String(adminCandCategoryId)
+      );
+
+      if (!rows.length) {
+        list.append(make("div", "empty", "Кандидатов пока нет"));
+        return;
+      }
+
+      rows.forEach((candidate) => {
+        const item = make("div", "admin-item");
+        item.append(make("span", "grow", candidate.name));
+
+        const del = make("button", "warn", "Удалить");
+        del.type = "button";
+        del.addEventListener("click", async () => {
+          if (savingAdmin) return;
+          savingAdmin = true;
+          del.disabled = true;
+
+          try {
+            // Сначала голоса за этого кандидата — FK без каскада.
+            await db.from("votes")
+              .delete()
+              .eq("candidate_id", candidate.id);
+            const { error } = await db.from("candidates")
+              .delete()
+              .eq("id", candidate.id);
+            if (error) throw error;
+
+            candidates = candidates.filter((c) => c.id !== candidate.id);
+            renderAdminCandList();
+            render();
+          } catch (error) {
+            console.error(error);
+            $("admin-cand-status").textContent = "Не удалось удалить.";
+          } finally {
+            savingAdmin = false;
+            del.disabled = false;
+          }
+        });
+
+        item.append(del);
+        list.append(item);
+      });
+    }
+
+    $("admin-cand-add").addEventListener("click", async () => {
+      if (!connected || !isAdmin || savingAdmin) return;
+
+      const name = $("admin-cand-name").value.trim();
+      if (!name || !adminCandCategoryId) {
+        $("admin-cand-status").textContent = "Выбери номинацию и имя.";
+        return;
+      }
+
+      savingAdmin = true;
+      $("admin-cand-add").disabled = true;
+      $("admin-cand-status").textContent = "Добавляем…";
+
+      try {
+        const position = candidates.filter(
+          (c) => String(c.category_id) === String(adminCandCategoryId)
+        ).length;
+
+        const { data, error } = await db.from("candidates")
+          .insert({
+            category_id: adminCandCategoryId,
+            name,
+            position
+          })
+          .select("id,category_id,name,position")
+          .single();
+        if (error) throw error;
+
+        candidates = [...candidates, data];
+        $("admin-cand-name").value = "";
+        $("admin-cand-status").textContent = "";
+        notify("Кандидат добавлен.");
+        renderAdminCandList();
+        render();
+      } catch (error) {
+        console.error(error);
+        $("admin-cand-status").textContent = "Не удалось добавить.";
+      } finally {
+        savingAdmin = false;
+        $("admin-cand-add").disabled = false;
+      }
+    });
+
+    // --- Вкладка «Предложенное» ---
+    async function loadModeration() {
+      if (!connected || !isAdmin) return;
+      const status = $("admin-mod-status");
+      status.textContent = "Загружаем…";
+
+      try {
+        const [proposalsRes, candRes] = await Promise.all([
+          db.from("category_proposals")
+            .select("id,title,description,status")
+            .eq("status", "pending")
+            .order("created_at"),
+          db.from("candidate_proposals")
+            .select("id,category_id,name,status")
+            .eq("status", "pending")
+            .order("created_at")
+        ]);
+
+        if (proposalsRes.error) throw proposalsRes.error;
+        if (candRes.error) throw candRes.error;
+
+        // Считаем голоса поддержки (доступно админу).
+        let counts = new Map();
+        const votesRes = await db.from("proposal_votes")
+          .select("proposal_id");
+        if (!votesRes.error) {
+          counts = votesRes.data.reduce((map, row) => {
+            map.set(row.proposal_id, (map.get(row.proposal_id) || 0) + 1);
+            return map;
+          }, new Map());
+        }
+
+        const proposalList = $("admin-proposals");
+        proposalList.replaceChildren();
+
+        if (!proposalsRes.data.length) {
+          proposalList.append(make("div", "empty", "Пока пусто"));
+        }
+
+        proposalsRes.data.forEach((proposal) => {
+          const item = make("div", "admin-item");
+          item.append(make("span", "grow", proposal.title));
+          item.append(make("span", "count",
+            `${counts.get(proposal.id) || 0} гол.`));
+
+          const add = make("button", "", "В финал");
+          add.type = "button";
+          add.addEventListener("click", () => {
+            finalizeProposal(proposal);
+          });
+
+          const reject = make("button", "warn", "Отклонить");
+          reject.type = "button";
+          reject.addEventListener("click", () => {
+            rejectProposal(proposal);
+          });
+
+          item.append(add, reject);
+          proposalList.append(item);
+        });
+
+        const candList = $("admin-cand-proposals");
+        candList.replaceChildren();
+
+        if (!candRes.data.length) {
+          candList.append(make("div", "empty", "Пока пусто"));
+        }
+
+        candRes.data.forEach((proposal) => {
+          const category = categories.find(
+            (c) => String(c.id) === String(proposal.category_id)
+          );
+
+          const item = make("div", "admin-item");
+          item.append(
+            make("span", "grow",
+              `${proposal.name} · ${category ? category.title : "—"}`)
+          );
+
+          const add = make("button", "", "Добавить");
+          add.type = "button";
+          add.addEventListener("click", () => {
+            approveCandidate(proposal);
+          });
+
+          const reject = make("button", "warn", "Отклонить");
+          reject.type = "button";
+          reject.addEventListener("click", () => {
+            rejectCandidate(proposal);
+          });
+
+          item.append(add, reject);
+          candList.append(item);
+        });
+
+        status.textContent = "";
+      } catch (error) {
+        console.error(error);
+        status.textContent =
+          "Не удалось загрузить предложения. Проверь SQL-скрипт.";
+      }
+    }
+
+    async function finalizeProposal(proposal) {
+      if (savingAdmin) return;
+      savingAdmin = true;
+      $("admin-mod-status").textContent = "Добавляем…";
+
+      try {
+        const nextPosition = Math.max(
+          0, ...categories.map((c) => c.position ?? 0)
+        ) + 1;
+
+        const { error } = await db.from("categories").insert({
+          id: crypto.randomUUID(),
+          title: proposal.title,
+          description: proposal.description || "",
+          is_permanent: false,
+          position: nextPosition
+        });
+        if (error) throw error;
+
+        await db.from("category_proposals")
+          .update({ status: "added" })
+          .eq("id", proposal.id);
+
+        const { data } = await db.from("categories")
+          .select("id,title,description,is_permanent,position")
+          .order("position");
+        if (!data.error) categories = data;
+
+        $("admin-mod-status").textContent = "";
+        notify("Номинация добавлена в финал.");
+        fillAdminSelects();
+        render();
+        loadModeration();
+      } catch (error) {
+        console.error(error);
+        $("admin-mod-status").textContent = "Не удалось добавить.";
+      } finally {
+        savingAdmin = false;
+      }
+    }
+
+    async function rejectProposal(proposal) {
+      if (savingAdmin) return;
+      savingAdmin = true;
+      try {
+        const { error } = await db.from("category_proposals")
+          .update({ status: "rejected" })
+          .eq("id", proposal.id);
+        if (error) throw error;
+        notify("Предложение отклонено.");
+        loadModeration();
+      } catch (error) {
+        console.error(error);
+        $("admin-mod-status").textContent = "Не удалось отклонить.";
+      } finally {
+        savingAdmin = false;
+      }
+    }
+
+    async function approveCandidate(proposal) {
+      if (savingAdmin) return;
+      savingAdmin = true;
+      try {
+        const position = candidates.filter(
+          (c) => String(c.category_id) === String(proposal.category_id)
+        ).length;
+
+        const { error } = await db.from("candidates").insert({
+          category_id: proposal.category_id,
+          name: proposal.name,
+          position
+        });
+        if (error) throw error;
+
+        await db.from("candidate_proposals")
+          .update({ status: "added" })
+          .eq("id", proposal.id);
+
+        const { data } = await db.from("candidates")
+          .select("id,category_id,name,position")
+          .order("position");
+        if (!data.error) candidates = data;
+
+        notify("Кандидат добавлен.");
+        render();
+        loadModeration();
+      } catch (error) {
+        console.error(error);
+        $("admin-mod-status").textContent = "Не удалось добавить.";
+      } finally {
+        savingAdmin = false;
+      }
+    }
+
+    async function rejectCandidate(proposal) {
+      if (savingAdmin) return;
+      savingAdmin = true;
+      try {
+        const { error } = await db.from("candidate_proposals")
+          .update({ status: "rejected" })
+          .eq("id", proposal.id);
+        if (error) throw error;
+        notify("Предложение отклонено.");
+        loadModeration();
+      } catch (error) {
+        console.error(error);
+        $("admin-mod-status").textContent = "Не удалось отклонить.";
+      } finally {
+        savingAdmin = false;
+      }
+    }
+
+    $("admin-mod-refresh").addEventListener("click", () => {
+      if (connected && isAdmin) loadModeration();
+    });
+
+    // --- Вкладка «Этап» ---
+    function fillAdminSettings() {
+      $("admin-stage").value = stage;
+      $("admin-voting-open").checked = votingOpen;
+      $("admin-final-count").value = String(finalCount);
+      $("admin-settings-status").textContent = "";
+    }
+
+    $("admin-settings-save").addEventListener("click", async () => {
+      if (!connected || !isAdmin || savingAdmin) return;
+
+      savingAdmin = true;
+      $("admin-settings-save").disabled = true;
+      $("admin-settings-status").textContent = "Сохраняем…";
+
+      try {
+        const { error } = await db.from("settings").update({
+          stage: $("admin-stage").value,
+          voting_open: $("admin-voting-open").checked,
+          final_count: Number($("admin-final-count").value) || 14
+        }).eq("id", 1);
+        if (error) throw error;
+
+        $("admin-settings-status").textContent = "Сохранено. Обновляем…";
+        setTimeout(() => location.reload(), 600);
+      } catch (error) {
+        console.error(error);
+        $("admin-settings-status").textContent =
+          "Не удалось сохранить. Проверь SQL-скрипт.";
+        savingAdmin = false;
+        $("admin-settings-save").disabled = false;
+      }
+    });
+
+    // --- Открытие админки ---
+    document.querySelectorAll("#admin-dialog .tab").forEach((node) => {
+      node.addEventListener("click", () => setAdminTab(node.dataset.tab));
+    });
+
     $("admin-button").addEventListener("click", () => {
-      if (!connected || !user || !isAdmin || savingAdmin) return;
-      fillAdminOptions();
+      if (!connected || !user || !isAdmin) return;
+      fillAdminSelects();
+      setAdminTab(adminTab);
 
       if (!$("admin-dialog").open) $("admin-dialog").showModal();
     });
@@ -1165,60 +2471,7 @@
       if (savingAdmin) event.preventDefault();
     });
 
-    $("admin-category").addEventListener("change", fillAdminFields);
-
-    $("admin-form").addEventListener("submit", async (event) => {
-      event.preventDefault();
-      if (!connected || !user || !isAdmin || savingAdmin) return;
-
-      const categoryId = $("admin-category").value;
-      const title = $("admin-name").value.trim();
-      const description = $("admin-description").value.trim();
-
-      if (!categoryId || !title) {
-        $("admin-status").textContent =
-          "Выбери номинацию и заполни название.";
-        return;
-      }
-
-      const controls = [
-        $("admin-category"), $("admin-name"),
-        $("admin-description"), $("admin-save"), $("close-admin")
-      ];
-
-      savingAdmin = true;
-      controls.forEach((control) => control.disabled = true);
-      $("admin-status").textContent = "Сохраняем…";
-      render();
-
-      try {
-        const { data, error } = await db.from("categories")
-          .update({ title, description })
-          .eq("id", categoryId)
-          .select("id,title,description,is_permanent,position")
-          .single();
-
-        if (error) throw error;
-
-        categories = categories.map(
-          (category) => category.id === data.id ? data : category
-        );
-
-        fillAdminOptions(data.id);
-        $("admin-status").textContent = "Изменения сохранены!";
-        notify("Номинация обновлена.");
-      } catch (error) {
-        console.error(error);
-        $("admin-status").textContent =
-          "Не удалось сохранить. Проверь права и соединение.";
-      } finally {
-        savingAdmin = false;
-        controls.forEach((control) => control.disabled = false);
-        $("admin-save").disabled = !categories.length;
-        render();
-      }
-    });
-
+    // ---------- Инициализация ----------
     async function init() {
       render();
       if (!SUPABASE_URL || !SUPABASE_KEY) return;
@@ -1241,28 +2494,31 @@
 
         db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const responses = await Promise.all([
-          db.from("categories")
-            .select("id,title,description,is_permanent,position")
-            .order("position"),
+        const [categoriesRes, candidatesRes, settingsRes, sessionRes] =
+          await Promise.all([
+            db.from("categories")
+              .select("id,title,description,is_permanent,position")
+              .order("position"),
 
-          db.from("candidates")
-            .select("id,category_id,name,position")
-            .order("position"),
+            db.from("candidates")
+              .select("id,category_id,name,position")
+              .order("position"),
 
-          db.from("settings")
-            .select("voting_open").eq("id", 1).single(),
+            db.from("settings").select("*").eq("id", 1).maybeSingle(),
 
-          db.auth.getSession()
-        ]);
+            db.auth.getSession()
+          ]);
 
-        const failure = responses.find((response) => response.error);
+        const failure = [categoriesRes, candidatesRes]
+          .find((response) => response.error);
         if (failure) throw failure.error;
 
-        categories = responses[0].data;
-        candidates = responses[1].data;
-        votingOpen = responses[2].data.voting_open;
-        user = responses[3].data.session?.user ?? null;
+        categories = categoriesRes.data;
+        candidates = candidatesRes.data;
+        votingOpen = settingsRes.data?.voting_open ?? false;
+        stage = settingsRes.data?.stage || "proposals";
+        finalCount = settingsRes.data?.final_count || 14;
+        user = sessionRes.data.session?.user ?? null;
         connected = true;
 
         db.auth.onAuthStateChange((_event, session) => {
@@ -1294,7 +2550,7 @@
 
         $("notice").textContent =
           "Не удалось подключить голосование. Проверь ключи Supabase " +
-          "и выполнение нового SQL-скрипта.";
+          "и выполнение SQL-скрипта.";
 
         render();
 
