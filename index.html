@@ -13,7 +13,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;600;700;800&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -400,6 +400,16 @@
         0 10px 60px #dcff6212;
     }
     a.card:hover::before, .card.votable:hover::before { opacity: 1; }
+    .ghost.neon {
+      font-family: Orbitron, Arial, sans-serif;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: #202020;  /* основной цвет = фон карточки */
+      -webkit-text-stroke: 1.5px #dcff62e6;
+      text-shadow:
+        0 0 14px #dcff6238,
+        0 0 28px #dcff621c;
+    }
     .ghost {
       position: absolute;
       top: 4px;
@@ -763,6 +773,15 @@
     }
     .admin-item button:hover:not(:disabled) { border-color: #6a6a60; }
     .admin-item button.warn { color: #e08a8a; border-color: #4a2c2c; }
+    .results-head {
+      margin: 16px 0 2px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .admin-item .grow.leader { color: var(--accent); font-weight: 800; }
     .admin-tabs {
       display: flex;
       gap: 6px;
@@ -974,8 +993,8 @@
           <div class="rule">
             <strong>02 / Выбери финал</strong>
             <p>
-              Голосованием определяем 14 номинаций:
-              6 постоянных и лучшие из предложенных.
+              К 6 постоянным добавляем 14, выбранных голосованием,
+              — всего 20 номинаций премии.
             </p>
           </div>
           <div class="rule">
@@ -1033,6 +1052,9 @@
       </button>
       <button class="tab" data-tab="settings" type="button">
         Этап
+      </button>
+      <button class="tab" data-tab="results" type="button">
+        Итоги
       </button>
     </div>
 
@@ -1110,6 +1132,23 @@
       </div>
 
       <p id="admin-mod-status" class="form-status" role="status"></p>
+    </div>
+
+    <div id="admin-tab-results" hidden>
+      <h3 class="block-title">Голоса по кандидатам</h3>
+      <div id="admin-results" class="admin-list"></div>
+
+      <div class="admin-row">
+        <button id="admin-results-refresh" class="button secondary"
+                type="button" style="flex:1">
+          Обновить
+        </button>
+        <button id="admin-finish" class="button" type="button" style="flex:1">
+          Завершить голосование
+        </button>
+      </div>
+
+      <p id="admin-results-status" class="form-status" role="status"></p>
     </div>
 
     <div id="admin-tab-settings" hidden>
@@ -1470,7 +1509,8 @@
       const card = make("a", "card");
       card.href = "#nom-" + category.id;
 
-      card.append(make("span", "ghost", String(index + 1).padStart(2, "0")));
+      card.append(make("span", "ghost neon",
+        String(index + 1).padStart(2, "0")));
 
       const top = make("div", "card-top");
       if (category.is_permanent) {
@@ -2113,14 +2153,16 @@
       document.querySelectorAll("#admin-dialog .tab").forEach((node) => {
         node.classList.toggle("active", node.dataset.tab === tab);
       });
-      ["categories", "cands", "moderation", "settings"].forEach((name) => {
-        $("admin-tab-" + name).hidden = name !== tab;
-      });
+      ["categories", "cands", "moderation", "settings", "results"]
+        .forEach((name) => {
+          $("admin-tab-" + name).hidden = name !== tab;
+        });
 
       if (tab === "categories") fillAdminCategoryForm();
       if (tab === "cands") fillAdminCandTab();
       if (tab === "moderation") loadModeration();
       if (tab === "settings") fillAdminSettings();
+      if (tab === "results") loadAdminResults();
     }
 
     function fillAdminSelects() {
@@ -2640,6 +2682,116 @@
       }
     });
 
+    // --- Вкладка «Итоги» ---
+    async function loadAdminResults() {
+      if (!connected || !isAdmin) return;
+      const status = $("admin-results-status");
+      status.textContent = "Загружаем…";
+
+      try {
+        const { data, error } = await db.rpc("admin_vote_stats");
+        if (error) throw error;
+
+        const container = $("admin-results");
+        container.replaceChildren();
+
+        if (!data.length) {
+          container.append(make("div", "empty",
+            "Голосов пока нет"));
+        }
+
+        let lastCategory = null;
+        let rank = 0;
+
+        data.forEach((row) => {
+          if (row.category_id !== lastCategory) {
+            lastCategory = row.category_id;
+            rank = 0;
+
+            const head = make("div", "results-head", row.category_title);
+            container.append(head);
+          }
+
+          rank += 1;
+          const item = make("div", "admin-item");
+          const label = make("span", "grow",
+            `${rank}. ${row.candidate_name}`);
+          if (rank === 1) label.classList.add("leader");
+
+          const count = make("span", "count",
+            `${row.v_count} гол.`);
+          item.append(label, count);
+          container.append(item);
+        });
+
+        status.textContent = "";
+      } catch (error) {
+        console.error(error);
+        status.textContent =
+          "Не удалось загрузить итоги: " +
+          (error.message || error.code || error);
+      }
+    }
+
+    $("admin-results-refresh").addEventListener("click", () => {
+      if (connected && isAdmin) loadAdminResults();
+    });
+
+    $("admin-finish").addEventListener("click", async () => {
+      if (!connected || !isAdmin || savingAdmin) return;
+      if (!window.confirm(
+        "Закрыть голосование? Проголосовать больше не сможет никто."
+      )) return;
+
+      savingAdmin = true;
+      $("admin-finish").disabled = true;
+
+      try {
+        const { error } = await db.rpc("admin_update_settings", {
+          p_stage: stage,
+          p_voting_open: false,
+          p_final_count: finalCount
+        });
+        if (error) throw error;
+
+        notify("Голосование завершено. Итоги — во вкладке «Итоги».");
+        setTimeout(() => location.reload(), 600);
+      } catch (error) {
+        console.error(error);
+        $("admin-results-status").textContent =
+          "Не удалось завершить: " + (error.message || error.code || error);
+        savingAdmin = false;
+        $("admin-finish").disabled = false;
+      }
+    });
+
+    // --- Вкладка «Этап» ---
+    $("admin-settings-save").addEventListener("click", async () => {
+      if (!connected || !isAdmin || savingAdmin) return;
+
+      savingAdmin = true;
+      $("admin-settings-save").disabled = true;
+      $("admin-settings-status").textContent = "Сохраняем…";
+
+      try {
+        const { error } = await db.rpc("admin_update_settings", {
+          p_stage: $("admin-stage").value,
+          p_voting_open: $("admin-voting-open").checked,
+          p_final_count: Number($("admin-final-count").value) || 14
+        });
+        if (error) throw error;
+
+        $("admin-settings-status").textContent = "Сохранено. Обновляем…";
+        setTimeout(() => location.reload(), 600);
+      } catch (error) {
+        console.error(error);
+        $("admin-settings-status").textContent =
+          "Не удалось сохранить. Проверь SQL-скрипт.";
+        savingAdmin = false;
+        $("admin-settings-save").disabled = false;
+      }
+    });
+
     // --- Открытие админки ---
     document.querySelectorAll("#admin-dialog .tab").forEach((node) => {
       node.addEventListener("click", () => setAdminTab(node.dataset.tab));
@@ -2751,7 +2903,4 @@
     }
 
     init();
-  </script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
-</body>
-</html>
+  </script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
