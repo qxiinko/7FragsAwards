@@ -1939,7 +1939,10 @@
         }
       } catch (error) {
         console.error(error);
-        notify("Голос не сохранён. Попробуй ещё раз.");
+        notify(
+          "Голос не сохранён: " +
+          (error.message || error.code || error)
+        );
       } finally {
         savingVote = false;
         render();
