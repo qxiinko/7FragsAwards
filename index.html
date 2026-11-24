@@ -1517,6 +1517,8 @@
         top.append(make("span", "badge mine", "Твоё предложение"));
       } else if (authorName) {
         top.append(make("span", "badge", `От ${authorName}`));
+      } else {
+        top.append(make("span", "badge", "От участника"));
       }
       card.append(top);
 
@@ -1571,7 +1573,8 @@
         author.textContent = `Предложил: ${name}`;
         author.hidden = false;
       } else {
-        author.hidden = true;
+        author.textContent = "Предложил: участник";
+        author.hidden = false;
       }
 
       const vote = $("proposal-view-vote");
