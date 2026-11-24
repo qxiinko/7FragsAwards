@@ -5,27 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101010">
   <meta name="description"
-        content="7FragsAwards2026 — выбираем тех, кто сделал этот год легендарным.">
-  <title>7FragsAwards2026 — голосование</title>
+        content="7FragsAwards2026 — выбираем героев нашего сообщества.">
+  <title>7FragsAwards2026</title>
 
   <style>
     :root {
       color-scheme: dark;
       --bg: #101010;
       --surface: #191919;
-      --border: #303030;
+      --border: #323232;
       --text: #f5f4ef;
       --muted: #a3a39b;
       --accent: #dcff62;
     }
 
     * { box-sizing: border-box; }
-
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 95px;
-    }
-
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
     body {
       margin: 0;
       background: var(--bg);
@@ -34,19 +29,15 @@
       line-height: 1.5;
     }
 
-    button, input { font: inherit; }
-
-    button, a {
-      -webkit-tap-highlight-color: transparent;
-    }
-
+    button, input, textarea, select { font: inherit; }
     button { cursor: pointer; }
     button:disabled { cursor: not-allowed; opacity: .5; }
     a { color: inherit; text-decoration: none; }
+    [hidden] { display: none !important; }
 
     :focus-visible {
       outline: 3px solid var(--accent);
-      outline-offset: 5px;
+      outline-offset: 4px;
     }
 
     .wrap {
@@ -68,7 +59,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
+      gap: 16px;
     }
 
     .logo {
@@ -83,21 +74,19 @@
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 22px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
-    .nav-link {
-      color: var(--muted);
-      font-size: 14px;
-    }
+    .nav-link { color: var(--muted); font-size: 14px; }
 
     .button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      min-height: 48px;
-      padding: 12px 22px;
+      min-height: 46px;
+      padding: 12px 20px;
       border: 1px solid transparent;
       border-radius: 12px;
       background: var(--accent);
@@ -120,47 +109,36 @@
     .hero {
       position: relative;
       overflow: hidden;
-      padding: 90px 0 70px;
+      padding: 85px 0 45px;
       border-bottom: 1px solid var(--border);
     }
 
     .hero::before {
       content: "";
       position: absolute;
-      width: 560px;
-      height: 560px;
-      right: -250px;
+      width: 500px;
+      height: 500px;
+      right: -220px;
       top: -220px;
       border-radius: 50%;
-      background: #dcff6212;
-      filter: blur(60px);
+      background: #dcff6215;
+      filter: blur(65px);
       pointer-events: none;
     }
 
     .hero-layout {
       display: grid;
-      grid-template-columns: 1fr 280px;
+      grid-template-columns: 1fr 270px;
       align-items: center;
       gap: 35px;
     }
 
     .eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 10px;
       color: var(--accent);
       font-size: 12px;
+      font-weight: 800;
       letter-spacing: 2px;
       text-transform: uppercase;
-      font-weight: 800;
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      flex: 0 0 auto;
-      border-radius: 50%;
-      background: currentColor;
     }
 
     h1 {
@@ -181,11 +159,7 @@
       font-size: 17px;
     }
 
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 
     .trophy {
       width: 100%;
@@ -198,8 +172,8 @@
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 15px;
-      margin-top: 60px;
+      gap: 14px;
+      margin-top: 55px;
       padding-top: 22px;
       border-top: 1px solid var(--border);
       color: var(--muted);
@@ -207,29 +181,28 @@
     }
 
     .strip strong { color: var(--text); }
-
-    section { padding: 64px 0; }
+    section { padding: 60px 0; }
 
     .section-head {
       display: flex;
-      justify-content: space-between;
       align-items: end;
+      justify-content: space-between;
       flex-wrap: wrap;
       gap: 20px;
-      margin-bottom: 28px;
+      margin-bottom: 26px;
     }
 
     h2 {
-      margin: 0 0 8px;
-      font-size: clamp(30px, 4vw, 46px);
-      letter-spacing: -2px;
+      margin: 0 0 10px;
+      font-size: clamp(30px, 4vw, 44px);
+      letter-spacing: -1.7px;
       line-height: 1.1;
     }
 
     .muted { color: var(--muted); }
     .section-head p { margin: 0; }
 
-    .progress {
+    .progress-box {
       min-width: 180px;
       color: var(--muted);
       font-size: 13px;
@@ -238,7 +211,7 @@
     progress {
       display: block;
       width: 100%;
-      height: 6px;
+      height: 7px;
       margin-top: 10px;
       accent-color: var(--accent);
     }
@@ -276,7 +249,7 @@
     }
 
     .number {
-      color: #73736d;
+      color: #77776e;
       font-size: 13px;
       font-family: monospace;
     }
@@ -296,25 +269,24 @@
       font-size: 26px;
       line-height: 1.1;
       letter-spacing: -1px;
+      overflow-wrap: anywhere;
     }
 
     .description {
       margin: 0 0 22px;
       color: var(--muted);
       font-size: 14px;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
     }
 
-    .candidates {
-      display: grid;
-      gap: 8px;
-      margin-top: auto;
-    }
+    .candidates { display: grid; gap: 8px; margin-top: auto; }
 
     .candidate {
-      width: 100%;
       display: flex;
       align-items: center;
       gap: 12px;
+      width: 100%;
       padding: 12px;
       border: 1px solid #353535;
       border-radius: 12px;
@@ -338,7 +310,6 @@
       display: grid;
       place-items: center;
       flex: 0 0 38px;
-      width: 38px;
       height: 38px;
       border-radius: 10px;
       background: #30332a;
@@ -350,15 +321,12 @@
     .candidate-name {
       flex: 1;
       min-width: 0;
-      overflow-wrap: anywhere;
       font-size: 14px;
       font-weight: 700;
+      overflow-wrap: anywhere;
     }
 
-    .choice {
-      color: var(--accent);
-      font-size: 18px;
-    }
+    .choice { color: var(--accent); font-size: 18px; }
 
     .empty {
       margin-top: auto;
@@ -373,7 +341,7 @@
     .rules {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+      gap: 18px;
       margin-top: 28px;
     }
 
@@ -389,11 +357,7 @@
       color: var(--accent);
     }
 
-    .rule p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
+    .rule p { margin: 0; color: var(--muted); font-size: 14px; }
 
     footer {
       padding: 28px 0;
@@ -410,7 +374,9 @@
     }
 
     dialog {
-      width: min(440px, calc(100% - 32px));
+      width: min(460px, calc(100% - 28px));
+      max-height: calc(100dvh - 32px);
+      overflow: auto;
       padding: 28px;
       border: 1px solid #414141;
       border-radius: 20px;
@@ -423,38 +389,33 @@
       backdrop-filter: blur(6px);
     }
 
+    #admin-dialog { width: min(560px, calc(100% - 28px)); }
+
     .dialog-head {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 16px;
     }
 
-    dialog h2 {
-      font-size: 28px;
-      letter-spacing: -1px;
-      margin: 0;
-    }
+    dialog h2 { margin: 0; font-size: 28px; letter-spacing: -1px; }
+    dialog p { color: var(--muted); font-size: 14px; }
 
     .close {
+      padding: 0 5px;
       border: 0;
       background: transparent;
       color: var(--muted);
       font-size: 28px;
     }
 
-    dialog p {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
     label {
       display: block;
+      margin: 16px 0 8px;
       font-size: 13px;
-      margin-bottom: 8px;
     }
 
-    input {
+    input, select, textarea {
       width: 100%;
       padding: 14px;
       border: 1px solid #444;
@@ -463,12 +424,9 @@
       color: var(--text);
     }
 
-    form .button {
-      width: 100%;
-      margin-top: 14px;
-    }
-
-    #auth-status { min-height: 24px; }
+    textarea { resize: vertical; min-height: 140px; }
+    form .button { width: 100%; margin-top: 16px; }
+    .form-status { min-height: 24px; }
 
     .toast {
       position: fixed;
@@ -476,7 +434,7 @@
       bottom: 24px;
       z-index: 30;
       width: max-content;
-      max-width: calc(100% - 32px);
+      max-width: calc(100% - 28px);
       padding: 14px 20px;
       border: 1px solid #505a3b;
       border-radius: 12px;
@@ -487,29 +445,28 @@
       font-size: 14px;
     }
 
-    [hidden] { display: none !important; }
-
     @media (max-width: 900px) {
       .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .hero-layout { grid-template-columns: 1fr 180px; }
+      .hero-layout { grid-template-columns: 1fr 170px; }
       .rules { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 600px) {
       .wrap { width: calc(100% - 28px); }
-      .nav { min-height: 68px; gap: 10px; }
-      .logo { font-size: 17px; }
+      .nav { min-height: 70px; gap: 8px; }
+      .logo { font-size: 16px; }
       .nav-link { display: none; }
-      .nav-right { gap: 0; }
-      .nav .button { padding: 10px 14px; min-height: 42px; }
-      .hero { padding: 50px 0 35px; }
+      .nav-right { gap: 6px; }
+      .nav .button { padding: 9px 10px; min-height: 38px; font-size: 12px; }
+      .hero { padding: 48px 0 30px; }
       .hero-layout { grid-template-columns: 1fr; }
       .trophy { display: none; }
       .lead { font-size: 15px; }
       .strip { margin-top: 35px; }
       .grid { grid-template-columns: 1fr; }
-      section { padding: 42px 0; }
+      section { padding: 40px 0; }
       .card { padding: 22px; }
+      dialog { padding: 22px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -523,9 +480,15 @@
   <header class="topbar">
     <nav class="wrap nav" aria-label="Основная навигация">
       <a href="#" class="logo">7FRAGS<span>AWARDS</span></a>
+
       <div class="nav-right">
         <a href="#nominations" class="nav-link">Номинации</a>
-        <a href="#rules" class="nav-link">Как голосовать</a>
+        <a href="#rules" class="nav-link">Правила</a>
+
+        <button id="admin-button" class="button secondary" hidden>
+          Управление
+        </button>
+
         <button id="auth-button" class="button secondary" disabled>
           Войти
         </button>
@@ -539,7 +502,6 @@
         <div class="hero-layout">
           <div>
             <div class="eyebrow">
-              <span class="dot"></span>
               Премия нашего сообщества · 2026
             </div>
 
@@ -559,21 +521,25 @@
 
           <svg class="trophy" viewBox="0 0 240 300"
                aria-hidden="true" fill="none">
-            <path d="M70 35H170V110C170 151 148 175 120 175
-                     C92 175 70 151 70 110V35Z"
-                  fill="currentColor"/>
-            <path d="M70 55H35V90C35 119 51 135 77 135
-                     M170 55H205V90C205 119 189 135 163 135"
-                  stroke="currentColor" stroke-width="14"/>
-            <path d="M120 174V235M85 243H155M70 263H170"
-                  stroke="currentColor" stroke-width="15"/>
-            <path d="M126 59L100 103H122L113 139L145 91H123L126 59Z"
-                  fill="#101010"/>
+            <path
+              d="M70 35H170V110C170 151 148 175 120 175
+                 C92 175 70 151 70 110V35Z"
+              fill="currentColor"/>
+            <path
+              d="M70 55H35V90C35 119 51 135 77 135
+                 M170 55H205V90C205 119 189 135 163 135"
+              stroke="currentColor" stroke-width="14"/>
+            <path
+              d="M120 174V235M85 243H155M70 263H170"
+              stroke="currentColor" stroke-width="15"/>
+            <path
+              d="M126 59L100 103H122L113 139L145 91H123L126 59Z"
+              fill="#101010"/>
           </svg>
         </div>
 
         <div class="strip">
-          <span id="phase">Подготовка к голосованию</span>
+          <span id="phase">Подготовка сайта</span>
           <span><strong id="category-count">6</strong> номинаций на сайте</span>
           <span>Победителей объявим на премии</span>
         </div>
@@ -587,7 +553,7 @@
           <p class="muted">Выбирай своего фаворита в каждой номинации.</p>
         </div>
 
-        <div class="progress">
+        <div class="progress-box">
           <span id="progress-text">Твои голоса: 0 из 6</span>
           <progress id="progress" max="6" value="0"
                     aria-label="Прогресс голосования"></progress>
@@ -595,7 +561,7 @@
       </div>
 
       <div id="notice" class="notice" role="status">
-        Предпросмотр оформления. Организатор ещё не подключил базу голосования.
+        Предпросмотр оформления. База голосования пока не подключена.
       </div>
 
       <div id="cards" class="grid"></div>
@@ -607,9 +573,7 @@
       <div class="rules">
         <div class="rule">
           <strong>01 / Войди по почте</strong>
-          <p>
-            Отправим ссылку для входа. Пароль придумывать не нужно.
-          </p>
+          <p>Отправим ссылку для входа. Пароль придумывать не нужно.</p>
         </div>
 
         <div class="rule">
@@ -638,10 +602,12 @@
     </div>
   </footer>
 
+  <!-- ВХОД -->
   <dialog id="auth-dialog" aria-labelledby="auth-title">
     <div class="dialog-head">
       <h2 id="auth-title">Ты в деле?</h2>
-      <button id="close-dialog" class="close" aria-label="Закрыть">×</button>
+      <button id="close-auth" class="close" type="button"
+              aria-label="Закрыть">×</button>
     </div>
 
     <p>Укажи почту — пришлём одноразовую ссылку для входа.</p>
@@ -655,7 +621,7 @@
         Получить ссылку →
       </button>
 
-      <p id="auth-status" role="status"></p>
+      <p id="auth-status" class="form-status" role="status"></p>
     </form>
 
     <p>
@@ -664,17 +630,50 @@
     </p>
   </dialog>
 
+  <!-- АДМИН-ПАНЕЛЬ -->
+  <dialog id="admin-dialog" aria-labelledby="admin-title">
+    <div class="dialog-head">
+      <h2 id="admin-title">Управление</h2>
+      <button id="close-admin" class="close" type="button"
+              aria-label="Закрыть">×</button>
+    </div>
+
+    <p>
+      Выбери номинацию и измени её название или описание.
+      Существующие голоса сохранятся.
+    </p>
+
+    <form id="admin-form">
+      <label for="admin-category">Номинация</label>
+      <select id="admin-category" required></select>
+
+      <label for="admin-name">Название</label>
+      <input id="admin-name" type="text" maxlength="100" required>
+
+      <label for="admin-description">Описание</label>
+      <textarea id="admin-description" maxlength="1500" rows="5"></textarea>
+
+      <button id="admin-save" class="button" type="submit">
+        Сохранить изменения
+      </button>
+
+      <p id="admin-status" class="form-status" role="status"></p>
+    </form>
+  </dialog>
+
   <div id="toast" class="toast" role="status" hidden></div>
 
   <noscript>
-    Для отображения номинаций и голосования необходимо включить JavaScript.
+    Для работы голосования необходимо включить JavaScript.
   </noscript>
 
   <script type="module">
-    // Вставь URL проекта и PUBLIC / PUBLISHABLE KEY из Supabase.
-    // НИКОГДА не вставляй сюда service_role или secret key.
-    const SUPABASE_URL = "";
-    const SUPABASE_KEY = "";
+    // ==================================================
+    // ЗАПОЛНИ ЭТИ ДВЕ СТРОКИ ДАННЫМИ ИЗ SUPABASE
+    // Используй Publishable key, НЕ secret / service_role.
+    // ==================================================
+    const SUPABASE_URL = "https://eifumfushymxopgjefun.supabase.co/rest/v1/";
+    const SUPABASE_KEY = "sb_publishable_VpEoLwSZVrNynxthUOa__w_eKlbbJWY";
 
     const previewCategories = [
       {
@@ -683,7 +682,8 @@
         description:
           "Всегда прикроет, поддержит и придёт на помощь. " +
           "Тот, с кем даже поражение не портит вечер.",
-        is_permanent: true
+        is_permanent: true,
+        position: 1
       },
       {
         id: "king",
@@ -691,7 +691,8 @@
         description:
           "Главная награда премии. Человек, без которого " +
           "этот год в 7Frags невозможно представить.",
-        is_permanent: true
+        is_permanent: true,
+        position: 2
       },
       {
         id: "afk",
@@ -699,7 +700,8 @@
         description:
           "Отошёл на минутку — вернулся в следующем сезоне. " +
           "За самое запоминающееся отсутствие года.",
-        is_permanent: true
+        is_permanent: true,
+        position: 3
       },
       {
         id: "carry",
@@ -707,7 +709,8 @@
         description:
           "Когда шансов уже не было, случилось это. " +
           "Самый мощный завоз, перевернувший всё.",
-        is_permanent: true
+        is_permanent: true,
+        position: 4
       },
       {
         id: "shame",
@@ -715,7 +718,8 @@
         description:
           "Тот самый эпизод, который хотелось бы забыть. " +
           "Но друзья, конечно, не дадут.",
-        is_permanent: true
+        is_permanent: true,
+        position: 5
       },
       {
         id: "game",
@@ -723,7 +727,8 @@
         description:
           "Игра, которая подарила нам больше всего эмоций, " +
           "обсуждений и совместных вечеров.",
-        is_permanent: true
+        is_permanent: true,
+        position: 6
       }
     ];
 
@@ -733,13 +738,18 @@
     let connected = false;
     let votingOpen = false;
     let user = null;
-    let saving = false;
+    let isAdmin = false;
+    let savingVote = false;
+    let savingAdmin = false;
+
     let categories = previewCategories;
     let candidates = [];
     let votes = new Map();
+
+    let accountVersion = 0;
     let toastTimer;
 
-    function element(tag, className, text) {
+    function make(tag, className, text) {
       const node = document.createElement(tag);
       if (className) node.className = className;
       if (text !== undefined) node.textContent = text;
@@ -750,6 +760,7 @@
       $("toast").textContent = message;
       $("toast").hidden = false;
       clearTimeout(toastTimer);
+
       toastTimer = setTimeout(() => {
         $("toast").hidden = true;
       }, 5500);
@@ -775,8 +786,14 @@
       $("progress").max = Math.max(count, 1);
       $("progress").value = completed;
 
-      $("auth-button").disabled = !connected;
+      $("auth-button").disabled =
+        !connected || savingVote || savingAdmin;
       $("auth-button").textContent = user ? "Выйти" : "Войти";
+      $("admin-button").hidden = !(connected && user && isAdmin);
+
+      if ((!user || !isAdmin) && $("admin-dialog").open) {
+        $("admin-dialog").close();
+      }
 
       $("phase").textContent = !connected
         ? "Предпросмотр сайта"
@@ -793,21 +810,21 @@
       }
 
       categories.forEach((category, index) => {
-        const card = element("article", "card");
-        const top = element("div", "card-top");
+        const card = make("article", "card");
+        const top = make("div", "card-top");
 
         top.append(
-          element("span", "number", String(index + 1).padStart(2, "0"))
+          make("span", "number", String(index + 1).padStart(2, "0"))
         );
 
         if (category.is_permanent) {
-          top.append(element("span", "badge", "Постоянная"));
+          top.append(make("span", "badge", "Постоянная"));
         }
 
         card.append(
           top,
-          element("h3", "", category.title),
-          element("p", "description", category.description)
+          make("h3", "", category.title),
+          make("p", "description", category.description)
         );
 
         const list = candidates.filter(
@@ -815,17 +832,16 @@
         );
 
         if (!list.length) {
-          card.append(
-            element("div", "empty", "Кандидаты появятся здесь")
-          );
+          card.append(make("div", "empty", "Кандидаты появятся здесь"));
         } else {
-          const container = element("div", "candidates");
+          const container = make("div", "candidates");
 
           list.forEach((candidate) => {
             const selected = votes.get(category.id) === candidate.id;
-            const button = element("button", "candidate");
+            const button = make("button", "candidate");
+
             button.type = "button";
-            button.disabled = !connected || !votingOpen || saving;
+            button.disabled = !connected || !votingOpen || savingVote;
             button.setAttribute("aria-pressed", String(selected));
             button.setAttribute(
               "aria-label",
@@ -843,9 +859,9 @@
               .toUpperCase();
 
             button.append(
-              element("span", "avatar", initials),
-              element("span", "candidate-name", candidate.name),
-              element("span", "choice", selected ? "✓" : "↗")
+              make("span", "avatar", initials),
+              make("span", "candidate-name", candidate.name),
+              make("span", "choice", selected ? "✓" : "↗")
             );
 
             button.addEventListener("click", () => {
@@ -862,41 +878,60 @@
       });
     }
 
-    async function refreshVotes() {
+    async function refreshAccount() {
+      const version = ++accountVersion;
       const currentUserId = user?.id;
+
       votes = new Map();
+      isAdmin = false;
+      render();
 
-      if (!currentUserId) {
-        render();
-        return;
-      }
+      if (!currentUserId) return;
 
-      const { data, error } = await db
-        .from("votes")
-        .select("category_id,candidate_id")
-        .eq("user_id", currentUserId);
+      const [votesResult, adminResult] = await Promise.all([
+        db.from("votes")
+          .select("category_id,candidate_id")
+          .eq("user_id", currentUserId),
 
-      // Не применяем ответ от уже завершённой сессии.
-      if (user?.id !== currentUserId) return;
+        db.from("admin_users")
+          .select("user_id")
+          .eq("user_id", currentUserId)
+          .maybeSingle()
+      ]);
 
-      if (error) {
+      if (
+        version !== accountVersion ||
+        user?.id !== currentUserId
+      ) return;
+
+      if (votesResult.error) {
+        console.error(votesResult.error);
         notify("Не удалось загрузить твои голоса. Обнови страницу.");
       } else {
         votes = new Map(
-          data.map((vote) => [vote.category_id, vote.candidate_id])
+          votesResult.data.map((vote) => [
+            vote.category_id,
+            vote.candidate_id
+          ])
         );
+      }
+
+      if (adminResult.error) {
+        console.error(adminResult.error);
+      } else {
+        isAdmin = Boolean(adminResult.data);
       }
 
       render();
     }
 
     async function saveVote(categoryId, candidateId) {
-      if (!connected || !votingOpen || saving) return;
+      if (!connected || !votingOpen || savingVote) return;
       if (!user) return showLogin();
       if (votes.get(categoryId) === candidateId) return;
 
       const voterId = user.id;
-      saving = true;
+      savingVote = true;
       render();
 
       try {
@@ -913,16 +948,16 @@
 
         if (user?.id === voterId) {
           votes.set(categoryId, candidateId);
-          notify("Голос сохранён. Хороший выбор!");
+          notify("Голос сохранён!");
         }
       } catch (error) {
         console.error(error);
         notify(
-          "Не удалось сохранить голос. Возможно, голосование уже закрыто. " +
+          "Не удалось сохранить голос. Возможно, голосование закрыто. " +
           "Обнови страницу и попробуй снова."
         );
       } finally {
-        saving = false;
+        savingVote = false;
         render();
       }
     }
@@ -930,20 +965,24 @@
     $("auth-button").addEventListener("click", async () => {
       if (!user) return showLogin();
 
-      const { error } = await db.auth.signOut();
+      try {
+        const { error } = await db.auth.signOut();
+        if (error) throw error;
 
-      if (error) {
+        user = null;
+        isAdmin = false;
+        votes = new Map();
+        ++accountVersion;
+
+        render();
+        notify("Ты вышел из аккаунта.");
+      } catch (error) {
+        console.error(error);
         notify("Не удалось выйти. Попробуй ещё раз.");
-        return;
       }
-
-      user = null;
-      votes = new Map();
-      render();
-      notify("Ты вышел из аккаунта.");
     });
 
-    $("close-dialog").addEventListener("click", () => {
+    $("close-auth").addEventListener("click", () => {
       $("auth-dialog").close();
     });
 
@@ -951,8 +990,7 @@
       event.preventDefault();
       if (!connected) return;
 
-      const button = $("send-link");
-      button.disabled = true;
+      $("send-link").disabled = true;
       $("auth-status").textContent = "Отправляем ссылку…";
 
       try {
@@ -962,23 +1000,131 @@
 
         const { error } = await db.auth.signInWithOtp({
           email: $("email").value.trim(),
-          options: {
-            emailRedirectTo: redirect.href
-          }
+          options: { emailRedirectTo: redirect.href }
         });
 
         if (error) throw error;
 
         $("auth-status").textContent =
           "Запрос принят. Проверь входящие и папку «Спам». " +
-          "Для повторной отправки подожди минуту.";
+          "Открой ссылку из письма в этом браузере.";
       } catch (error) {
         console.error(error);
         $("auth-status").textContent =
-          "Не удалось отправить ссылку. Попробуй позже " +
+          "Не удалось отправить письмо. Попробуй позже " +
           "или обратись к организатору.";
       } finally {
-        button.disabled = false;
+        $("send-link").disabled = false;
+      }
+    });
+
+    function fillAdminFields() {
+      const category = categories.find(
+        (item) => item.id === $("admin-category").value
+      );
+
+      $("admin-name").value = category?.title ?? "";
+      $("admin-description").value = category?.description ?? "";
+      $("admin-status").textContent = "";
+      $("admin-save").disabled = !category || savingAdmin;
+    }
+
+    function fillAdminOptions(selectedId) {
+      const select = $("admin-category");
+      select.replaceChildren();
+
+      categories.forEach((category) => {
+        const option = document.createElement("option");
+        option.value = category.id;
+        option.textContent = category.title;
+        select.append(option);
+      });
+
+      if (
+        selectedId &&
+        categories.some((category) => category.id === selectedId)
+      ) {
+        select.value = selectedId;
+      }
+
+      fillAdminFields();
+    }
+
+    $("admin-button").addEventListener("click", () => {
+      if (!connected || !user || !isAdmin || savingAdmin) return;
+
+      fillAdminOptions();
+
+      if (!$("admin-dialog").open) {
+        $("admin-dialog").showModal();
+      }
+    });
+
+    $("close-admin").addEventListener("click", () => {
+      if (!savingAdmin) $("admin-dialog").close();
+    });
+
+    $("admin-dialog").addEventListener("cancel", (event) => {
+      if (savingAdmin) event.preventDefault();
+    });
+
+    $("admin-category").addEventListener("change", fillAdminFields);
+
+    $("admin-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!connected || !user || !isAdmin || savingAdmin) return;
+
+      const categoryId = $("admin-category").value;
+      const title = $("admin-name").value.trim();
+      const description = $("admin-description").value.trim();
+
+      if (!categoryId || !title) {
+        $("admin-status").textContent =
+          "Выбери номинацию и заполни название.";
+        return;
+      }
+
+      const controls = [
+        $("admin-category"),
+        $("admin-name"),
+        $("admin-description"),
+        $("admin-save"),
+        $("close-admin")
+      ];
+
+      savingAdmin = true;
+      controls.forEach((control) => control.disabled = true);
+      $("admin-status").textContent = "Сохраняем…";
+      render();
+
+      try {
+        const { data, error } = await db
+          .from("categories")
+          .update({ title, description })
+          .eq("id", categoryId)
+          .select("id,title,description,is_permanent,position")
+          .single();
+
+        if (error) throw error;
+
+        categories = categories.map((category) =>
+          category.id === data.id ? data : category
+        );
+
+        fillAdminOptions(data.id);
+        $("admin-status").textContent = "Изменения сохранены!";
+        notify("Номинация обновлена.");
+      } catch (error) {
+        console.error(error);
+        $("admin-status").textContent =
+          "Не удалось сохранить. Проверь соединение " +
+          "и права администратора.";
+      } finally {
+        savingAdmin = false;
+        controls.forEach((control) => control.disabled = false);
+        $("admin-save").disabled = !categories.length;
+        render();
       }
     });
 
@@ -998,18 +1144,21 @@
           db.from("categories")
             .select("id,title,description,is_permanent,position")
             .order("position"),
+
           db.from("candidates")
             .select("id,category_id,name,position")
             .order("position"),
+
           db.from("settings")
             .select("voting_open")
             .eq("id", 1)
             .single(),
+
           db.auth.getSession()
         ]);
 
-        const failure = responses.find((response) => response.error);
-        if (failure) throw failure.error;
+        const failed = responses.find((response) => response.error);
+        if (failed) throw failed.error;
 
         categories = responses[0].data;
         candidates = responses[1].data;
@@ -1022,20 +1171,23 @@
 
           // Запросы к базе выполняем вне обработчика Auth.
           setTimeout(() => {
-            refreshVotes().catch((error) => {
+            refreshAccount().catch((error) => {
               console.error(error);
-              notify("Ошибка загрузки голосов. Обнови страницу.");
+              notify("Ошибка загрузки аккаунта. Обнови страницу.");
             });
           }, 0);
         });
 
-        await refreshVotes();
+        await refreshAccount();
       } catch (error) {
         console.error(error);
         connected = false;
+        isAdmin = false;
+
         $("notice").textContent =
           "Не удалось подключить голосование. " +
           "Организатору нужно проверить настройки Supabase.";
+
         render();
       }
     }
