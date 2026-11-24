@@ -823,7 +823,7 @@
           Управление
         </button>
 
-        <button id="auth-button" class="button secondary sm" disabled>
+        <button id="auth-button" class="button discord sm" disabled>
           Войти
         </button>
       </div>
@@ -878,20 +878,17 @@
         <div class="account">
           <h2>Твой пропуск на премию</h2>
           <p id="account-status" class="muted" role="status">
-            Для участия войди по почте и привяжи Discord.
+            Войди через Discord, чтобы участвовать в премии.
           </p>
 
           <div id="account-steps" class="steps">
-            <span id="email-step" class="step">1. Подтвердить почту</span>
-            <span id="discord-step" class="step">2. Привязать Discord</span>
-            <span id="access-step" class="step">3. Получить допуск</span>
+            <span id="discord-step" class="step">1. Привязать Discord</span>
+            <span id="access-step" class="step">2. Получить допуск</span>
           </div>
 
-          <p id="account-email" class="muted" hidden></p>
-
           <div class="actions">
-            <button id="account-login" class="button" disabled>
-              Войти по почте
+            <button id="account-login" class="button discord" disabled>
+              Войти через Discord
             </button>
 
             <button id="link-discord" class="button discord" hidden>
@@ -995,30 +992,6 @@
     </div>
   </footer>
 
-  <dialog id="auth-dialog" aria-labelledby="auth-title">
-    <div class="dialog-head">
-      <h2 id="auth-title">Вход по почте</h2>
-      <button id="close-auth" class="close" type="button"
-              aria-label="Закрыть">×</button>
-    </div>
-
-    <p>
-      При первом входе аккаунт создастся автоматически.
-      После подтверждения почты потребуется привязать Discord.
-    </p>
-
-    <form id="auth-form">
-      <label for="email">Электронная почта</label>
-      <input id="email" type="email" autocomplete="email"
-             placeholder="you@example.com" required maxlength="254">
-
-      <button id="send-link" class="button" type="submit">
-        Получить ссылку →
-      </button>
-
-      <p id="auth-status" class="form-status" role="status"></p>
-    </form>
-  </dialog>
 
   <dialog id="admin-dialog" aria-labelledby="admin-title">
     <div class="dialog-head">
@@ -1309,24 +1282,17 @@
 
     window.addEventListener("hashchange", render);
 
-    function showLogin() {
-      if (!connected) return;
-      $("auth-status").textContent = "";
-      if (!$("auth-dialog").open) $("auth-dialog").showModal();
+    function askLogin() {
+      notify("Войди через Discord, чтобы продолжить.");
     }
 
     // ---------- Аккаунт ----------
     function renderAccount() {
       const reason = access.reason;
-      const emailOK = Boolean(
-        user && !["signed_out", "checking", "error", "email_required"]
-          .includes(reason)
-      );
       const discordOK = Boolean(
         user && ["binding_required", "ready"].includes(reason)
       );
 
-      $("email-step").classList.toggle("done", emailOK);
       $("discord-step").classList.toggle("done", discordOK);
       $("access-step").classList.toggle("done", access.eligible);
 
@@ -1335,11 +1301,6 @@
 
       $("account-login").hidden = Boolean(user);
       $("account-login").disabled = !connected;
-
-      $("account-email").hidden = !user;
-      $("account-email").textContent = user
-        ? `Почта аккаунта: ${user.email || "не указана"}`
-        : "";
 
       $("refresh-account").hidden = !user;
       $("refresh-account").disabled =
@@ -1350,7 +1311,7 @@
       $("link-discord").disabled =
         !connected || checking || linking;
 
-      let message = "Войди по почте, чтобы участвовать в премии.";
+      let message = "Войди через Discord, чтобы участвовать в премии.";
 
       if (!connected) {
         message = "Предпросмотр сайта. Авторизация пока недоступна.";
@@ -1359,8 +1320,8 @@
       } else if (user) {
         const messages = {
           email_required:
-            "Нужна регистрация по почте с подтверждением. " +
-            "Войди по ссылке, отправленной на твою почту.",
+            "Аккаунт создан по почте. Привяжи Discord, " +
+            "чтобы продолжить участие.",
           discord_required:
             "Почта подтверждена. Осталось привязать Discord — " +
             "он закрепляется за твоим участием.",
@@ -1752,7 +1713,7 @@
         event.preventDefault();
         const name = input.value.trim();
         if (!name) return;
-        if (!user) return showLogin();
+        if (!user) return askLogin();
 
         submit.disabled = true;
         const { error } = await db
@@ -1846,7 +1807,7 @@
               .eq("user_id", currentUserId)
               .maybeSingle(),
 
-            db.rpc("voter_access"),
+            db.rpc("confirm_discord_voter"),
 
             db.from("proposal_votes")
               .select("proposal_id")
@@ -1879,18 +1840,10 @@
 
         if (accessResult.error) throw accessResult.error;
 
-        let nextAccess = accessResult.data;
-
-        if (nextAccess.reason === "binding_required") {
-          const confirmation = await db.rpc("confirm_discord_voter");
-
-          if (version !== accountVersion || user?.id !== currentUserId) return;
-
-          if (confirmation.error) throw confirmation.error;
-          nextAccess = confirmation.data;
-        }
-
-        access = nextAccess;
+        // У аккаунта без Discord-идентити RPC вернёт null —
+        // это как раз «нужно привязать Discord».
+        access = accessResult.data ||
+          { eligible: false, reason: "discord_required" };
 
         await loadProposals(version);
       } catch (error) {
@@ -1942,7 +1895,7 @@
     // ---------- Голосование за кандидатов ----------
     async function saveVote(categoryId, candidateId) {
       if (!connected || !votingOpen || savingVote || checking) return;
-      if (!user) return showLogin();
+      if (!user) return askLogin();
 
       if (!access.eligible) {
         $("account").scrollIntoView({ behavior: "smooth" });
@@ -1984,7 +1937,7 @@
     // ---------- Голосование за номинации ----------
     async function toggleProposalVote(proposalId) {
       if (!connected) return;
-      if (!user) return showLogin();
+      if (!user) return askLogin();
       if (!votingOpen) return notify("Голосование закрыто.");
       if (!access.eligible) {
         $("account").scrollIntoView({ behavior: "smooth" });
@@ -2020,7 +1973,7 @@
     $("propose-form").addEventListener("submit", async (event) => {
       event.preventDefault();
       if (!connected) return notify("Предпросмотр. Подключи Supabase.");
-      if (!user) return showLogin();
+      if (!user) return askLogin();
 
       const title = $("propose-title").value.trim();
       const description = $("propose-desc").value.trim();
@@ -2055,10 +2008,10 @@
     });
 
     // ---------- Авторизация ----------
-    $("account-login").addEventListener("click", showLogin);
+    $("account-login").addEventListener("click", () => discordLogin());
 
     $("auth-button").addEventListener("click", async () => {
-      if (!user) return showLogin();
+      if (!user) return discordLogin();
 
       try {
         const { error } = await db.auth.signOut();
@@ -2080,41 +2033,28 @@
       }
     });
 
-    $("close-auth").addEventListener("click", () => {
-      $("auth-dialog").close();
-    });
+    async function discordLogin() {
+      if (!connected || checking || linking) return;
 
-    $("auth-form").addEventListener("submit", async (event) => {
-      event.preventDefault();
-      if (!connected) return;
-
-      $("send-link").disabled = true;
-      $("auth-status").textContent = "Отправляем ссылку…";
+      linking = true;
+      render();
 
       try {
-        const { error } = await db.auth.signInWithOtp({
-          email: $("email").value.trim(),
-          options: {
-            emailRedirectTo: siteURL.href,
-            shouldCreateUser: true
-          }
+        // OAuth-вход: после подтверждения Discord вернёт
+        // браузер на siteURL, сессию подхватит onAuthStateChange.
+        const { error } = await db.auth.signInWithOAuth({
+          provider: "discord",
+          options: { redirectTo: siteURL.href }
         });
 
         if (error) throw error;
-
-        $("auth-status").textContent =
-          "Запрос принят. Проверь входящие и папку «Спам». " +
-          "Открой ссылку из письма в этом браузере.";
       } catch (error) {
         console.error(error);
-        $("auth-status").textContent =
-          "Не удалось отправить письмо: " +
-          (error.message || error.code || error) +
-          " · попробуй позже или обратись к организатору.";
-      } finally {
-        $("send-link").disabled = false;
+        linking = false;
+        render();
+        notify("Не удалось открыть Discord. Попробуй ещё раз.");
       }
-    });
+    }
 
     $("link-discord").addEventListener("click", async () => {
       if (!connected || !user || linking || checking) return;
