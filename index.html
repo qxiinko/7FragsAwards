@@ -1731,6 +1731,43 @@
       body.append(form);
     }
 
+    // Фоновое обновление списков — чтобы новые номинации и
+    // предложения появлялись у всех без перезагрузки страницы.
+    async function refreshData() {
+      if (!connected) return;
+      const version = ++accountVersion;
+
+      try {
+        const [categoriesRes, candidatesRes, settingsRes] =
+          await Promise.all([
+            db.from("categories")
+              .select("id,title,description,is_permanent,position")
+              .order("position"),
+            db.from("candidates")
+              .select("id,category_id,name,position")
+              .order("position"),
+            db.from("settings").select("*").eq("id", 1).maybeSingle()
+          ]);
+
+        if (version !== accountVersion) return;
+
+        if (!categoriesRes.error) categories = categoriesRes.data;
+        if (!candidatesRes.error) candidates = candidatesRes.data;
+        if (!settingsRes.error && settingsRes.data) {
+          votingOpen = settingsRes.data.voting_open ?? false;
+          stage = settingsRes.data.stage || stage;
+          finalCount = settingsRes.data.final_count || finalCount;
+        }
+
+        if (user) await loadProposals(version);
+        if (version === accountVersion) render();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    setInterval(() => refreshData().catch(console.error), 45000);
+
     async function loadPendingCandidates(categoryId) {
       if (!connected || !user) return [];
       try {
@@ -1804,6 +1841,9 @@
         }
 
         await loadProposals(version);
+      } catch (error) {
+        // Любой сбой проверки не мешает участию — просто логируем.
+        console.error(error);
       } finally {
         if (version === accountVersion) {
           checking = false;
@@ -1920,7 +1960,7 @@
       } catch (error) {
         console.error(error);
         $("propose-status").textContent =
-          "Не удалось отправить. Попробуй позже.";
+          "Не удалось отправить: " + (error.message || error.code || error);
       } finally {
         button.disabled = false;
       }
