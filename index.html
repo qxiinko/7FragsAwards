@@ -1870,7 +1870,13 @@
         access = { eligible: true, reason: "ready" };
 
         if (user?.id) {
-          const check = await db.rpc("confirm_discord_voter");
+          const [check, adminRes] = await Promise.all([
+            db.rpc("confirm_discord_voter"),
+            db.from("admin_users")
+              .select("user_id")
+              .eq("user_id", user.id)
+              .maybeSingle()
+          ]);
 
           if (version !== accountVersion) return;
 
@@ -1880,6 +1886,11 @@
             // Без проверки занятости всё равно пускаем голосовать.
             console.error(check.error);
           }
+
+          // Кнопка «Управление» — только для строк в admin_users.
+          isAdmin = Boolean(adminRes.data);
+        } else {
+          isAdmin = false;
         }
 
         await loadProposals(version);
