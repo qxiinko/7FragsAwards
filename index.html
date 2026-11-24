@@ -1247,6 +1247,7 @@
     let votes = new Map();            // category_id -> candidate_id (этап 3)
     let proposals = [];               // предложенные номинации (этапы 1–2)
     let myProposalVotes = new Set();  // id предложений, за которые голосовал
+    let proposalAuthors = new Map();  // proposal_id -> Discord-ник автора
     let pendingCandidates = [];       // кандидаты на модерации (для деталей)
 
     let adminTab = "categories";
@@ -1558,8 +1559,13 @@
       );
 
       const top = make("div", "card-top");
-      if (user && proposal.author_id === user.id) {
+      const authorName = proposalAuthors.get(String(proposal.id));
+      const isMine = user && proposal.author_id === user.id;
+
+      if (isMine) {
         top.append(make("span", "badge mine", "Твоё предложение"));
+      } else if (authorName) {
+        top.append(make("span", "badge", `От ${authorName}`));
       }
       card.append(top);
 
@@ -1605,8 +1611,13 @@
       desc.hidden = !proposal.description;
 
       const author = $("proposal-view-author");
+      const name = proposalAuthors.get(String(proposal.id));
+
       if (user && proposal.author_id === user.id) {
         author.textContent = "Это твоё предложение.";
+        author.hidden = false;
+      } else if (name) {
+        author.textContent = `Предложил: ${name}`;
         author.hidden = false;
       } else {
         author.hidden = true;
@@ -1898,15 +1909,29 @@
 
     async function loadProposals(version) {
       try {
-        const { data, error } = await db
-          .from("category_proposals")
-          .select("id,title,description,author_id")
-          .eq("status", "pending")
-          .order("created_at");
+        const [proposalsRes, authorsRes] = await Promise.all([
+          db.from("category_proposals")
+            .select("id,title,description,author_id")
+            .eq("status", "pending")
+            .order("created_at"),
+          db.rpc("proposal_authors")
+        ]);
 
         if (version !== accountVersion) return;
-        if (error) throw error;
-        proposals = data || [];
+
+        if (proposalsRes.error) throw proposalsRes.error;
+        proposals = proposalsRes.data || [];
+
+        proposalAuthors = new Map();
+        if (!authorsRes.error) {
+          proposals.forEach((p) => {
+            const row = (authorsRes.data || [])
+              .find((r) => String(r.proposal_id) === String(p.id));
+            if (row?.author_name) {
+              proposalAuthors.set(String(p.id), row.author_name);
+            }
+          });
+        }
       } catch (error) {
         if (version !== accountVersion) return;
         console.error(error);
