@@ -1731,6 +1731,38 @@
       body.append(form);
     }
 
+    async function loadProposals(version) {
+      try {
+        const [proposalsRes, authorsRes] = await Promise.all([
+          db.from("category_proposals")
+            .select("id,title,description,author_id")
+            .eq("status", "pending")
+            .order("created_at"),
+          db.rpc("proposal_authors")
+        ]);
+
+        if (version !== accountVersion) return;
+
+        if (proposalsRes.error) throw proposalsRes.error;
+        proposals = proposalsRes.data || [];
+
+        proposalAuthors = new Map();
+        if (!authorsRes.error) {
+          proposals.forEach((p) => {
+            const row = (authorsRes.data || [])
+              .find((r) => String(r.proposal_id) === String(p.id));
+            if (row?.author_name) {
+              proposalAuthors.set(String(p.id), row.author_name);
+            }
+          });
+        }
+      } catch (error) {
+        if (version !== accountVersion) return;
+        console.error(error);
+        proposals = [];
+      }
+    }
+
     // Фоновое обновление списков — чтобы новые номинации и
     // предложения появлялись у всех без перезагрузки страницы.
     async function refreshData() {
