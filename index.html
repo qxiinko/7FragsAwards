@@ -909,10 +909,6 @@
             Войди через Discord, чтобы участвовать в премии.
           </p>
 
-          <div id="account-steps" class="steps">
-            <span id="discord-step" class="step">1. Привязать Discord</span>
-            <span id="access-step" class="step">2. Получить допуск</span>
-          </div>
 
           <div class="actions">
             <button id="account-login" class="button discord" disabled>
@@ -923,9 +919,6 @@
               Привязать Discord
             </button>
 
-            <button id="refresh-account" class="button secondary" hidden>
-              Проверить статус
-            </button>
           </div>
         </div>
       </section>
@@ -1317,60 +1310,28 @@
     // ---------- Аккаунт ----------
     function renderAccount() {
       const reason = access.reason;
-      const discordOK = Boolean(
-        user && ["binding_required", "ready"].includes(reason)
-      );
-
-      $("discord-step").classList.toggle("done", discordOK);
-      $("access-step").classList.toggle("done", access.eligible);
-
-      // Шаги показываем только гостям — после входа блок чистый.
-      $("account-steps").hidden = Boolean(user);
 
       $("account-login").hidden = Boolean(user);
       $("account-login").disabled = !connected;
 
-      $("refresh-account").hidden = !user;
-      $("refresh-account").disabled =
-        !connected || checking || linking || savingVote;
-
-      $("link-discord").hidden =
-        !user || reason !== "discord_required";
-      $("link-discord").disabled =
-        !connected || checking || linking;
 
       let message = "Войди через Discord, чтобы участвовать в премии.";
 
       if (!connected) {
         message = "Предпросмотр сайта. Авторизация пока недоступна.";
-      } else if (checking || reason === "checking") {
-        message = "Проверяем аккаунт и допуск к голосованию…";
+      } else if (checking) {
+        message = "Проверяем аккаунт…";
       } else if (user) {
         const messages = {
-          email_required:
-            "Аккаунт создан по почте. Привяжи Discord, " +
-            "чтобы продолжить участие.",
-          discord_required:
-            "Почта подтверждена. Осталось привязать Discord — " +
-            "он закрепляется за твоим участием.",
-          binding_required:
-            "Discord найден. Нажми «Проверить статус», " +
-            "чтобы завершить подтверждение.",
-          discord_changed:
-            "К аккаунту подключён не тот Discord. " +
-            "Обратись к организатору.",
+          ready:
+            `Ты в игре${access.discord_name
+              ? " · " + access.discord_name
+              : ""}. Голосуй!`,
           discord_used:
             "Этот Discord уже закреплён за другим участником. " +
-            "Обратись к организатору.",
-          ready:
-            `Допуск получен${access.discord_name
-              ? " · " + access.discord_name
-              : ""}. Участвуй!`,
-          error:
-            "Не удалось проверить допуск: " +
-            (access.message || "нажми «Проверить статус».")
+            "Обратись к организатору."
         };
-        message = messages[reason] || "Обнови статус аккаунта.";
+        message = messages[reason] || messages.ready;
       }
 
       $("account-status").textContent = message;
@@ -1820,80 +1781,29 @@
     // ---------- Данные аккаунта ----------
     async function refreshAccount() {
       const version = ++accountVersion;
-      const currentUserId = user?.id;
 
       checking = true;
-      isAdmin = false;
-      access = { eligible: false, reason: "checking" };
-      votes = new Map();
       render();
 
       try {
-        if (!currentUserId) {
-          access = { eligible: false, reason: "signed_out" };
-          return;
+        // Вход через Discord = доступ получен. RPC нужен только,
+        // чтобы поймать повторное использование чужого Discord.
+        access = { eligible: true, reason: "ready" };
+
+        if (user?.id) {
+          const check = await db.rpc("confirm_discord_voter");
+
+          if (version !== accountVersion) return;
+
+          if (!check.error && check.data?.reason === "discord_used") {
+            access = { eligible: false, reason: "discord_used" };
+          } else if (check.error) {
+            // Без проверки занятости всё равно пускаем голосовать.
+            console.error(check.error);
+          }
         }
-
-        const [voteResult, adminResult, accessResult, pvResult] =
-          await Promise.all([
-            db.from("votes")
-              .select("category_id,candidate_id")
-              .eq("user_id", currentUserId),
-
-            db.from("admin_users")
-              .select("user_id")
-              .eq("user_id", currentUserId)
-              .maybeSingle(),
-
-            db.rpc("confirm_discord_voter"),
-
-            db.from("proposal_votes")
-              .select("proposal_id")
-              .eq("user_id", currentUserId)
-          ]);
-
-        if (version !== accountVersion || user?.id !== currentUserId) return;
-
-        if (voteResult.error) {
-          console.error(voteResult.error);
-        } else {
-          votes = new Map(
-            voteResult.data.map((vote) => [
-              vote.category_id, vote.candidate_id
-            ])
-          );
-        }
-
-        if (adminResult.error) {
-          console.error(adminResult.error);
-        } else {
-          isAdmin = Boolean(adminResult.data);
-        }
-
-        if (pvResult.error) {
-          console.error(pvResult.error);
-        } else {
-          myProposalVotes = new Set(pvResult.data.map((row) => row.proposal_id));
-        }
-
-        if (accessResult.error) throw accessResult.error;
-
-        // У аккаунта без Discord-идентити RPC вернёт null —
-        // это как раз «нужно привязать Discord».
-        access = accessResult.data ||
-          { eligible: false, reason: "discord_required" };
 
         await loadProposals(version);
-      } catch (error) {
-        if (version !== accountVersion || user?.id !== currentUserId) return;
-
-        console.error(error);
-        access = {
-          eligible: false,
-          reason: "error",
-          message: error.message || String(error)
-        };
-        notify("Не удалось подтвердить допуск. Проверь статус ещё раз.");
       } finally {
         if (version === accountVersion) {
           checking = false;
@@ -1902,39 +1812,6 @@
       }
     }
 
-    async function loadProposals(version) {
-      try {
-        const [proposalsRes, authorsRes] = await Promise.all([
-          db.from("category_proposals")
-            .select("id,title,description,author_id")
-            .eq("status", "pending")
-            .order("created_at"),
-          db.rpc("proposal_authors")
-        ]);
-
-        if (version !== accountVersion) return;
-
-        if (proposalsRes.error) throw proposalsRes.error;
-        proposals = proposalsRes.data || [];
-
-        proposalAuthors = new Map();
-        if (!authorsRes.error) {
-          proposals.forEach((p) => {
-            const row = (authorsRes.data || [])
-              .find((r) => String(r.proposal_id) === String(p.id));
-            if (row?.author_name) {
-              proposalAuthors.set(String(p.id), row.author_name);
-            }
-          });
-        }
-      } catch (error) {
-        if (version !== accountVersion) return;
-        console.error(error);
-        proposals = [];
-      }
-    }
-
-    // ---------- Голосование за кандидатов ----------
     async function saveVote(categoryId, candidateId) {
       if (!connected || !votingOpen || savingVote || checking) return;
       if (!user) return askLogin();
@@ -2130,11 +2007,6 @@
         linking = false;
         render();
       }
-    });
-
-    $("refresh-account").addEventListener("click", async () => {
-      if (!connected || !user || checking) return;
-      await refreshAccount();
     });
 
     // ==========================================================
