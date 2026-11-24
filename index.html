@@ -978,7 +978,9 @@
     </div>
 
     <div id="admin-tab-moderation" hidden>
-      <h3 class="block-title">Номинации от участников</h3>
+      <h3 id="admin-proposals-head" class="block-title">
+        Номинации от участников
+      </h3>
       <div id="admin-proposals" class="admin-list"></div>
 
       <h3 class="block-title">Кандидаты от участников</h3>
@@ -1138,6 +1140,14 @@
       return name.trim().split(/\s+/).slice(0, 2)
         .map((word) => Array.from(word)[0] || "")
         .join("").toUpperCase();
+    }
+
+    // crypto.randomUUID() есть только в защищённом контексте
+    // (HTTPS / localhost). Для http-хостинга — запасной генератор.
+    function newId() {
+      if (window.crypto?.randomUUID) return crypto.randomUUID();
+      return "c" + Date.now().toString(36) +
+        Math.random().toString(36).slice(2, 10);
     }
 
     // ---------- Роутинг: главная / страница номинации ----------
@@ -1311,11 +1321,13 @@
           ? "Придумай свою номинацию — лучшее попадёт в финальный список."
           : "Войди, чтобы предложить свою номинацию.";
       } else if (stage === "nominations") {
-        noticeText = !user
-          ? "Войди, чтобы поддерживать номинации."
-          : !access.eligible
-            ? "Сначала заверши подтверждение в блоке «Твой пропуск на премию»."
-            : "Поддержи номинации, которые должны попасть в финальный список.";
+        noticeText = !votingOpen
+          ? "Голосование за номинации закрыто. Загляни позже."
+          : !user
+            ? "Войди, чтобы поддерживать номинации."
+            : !access.eligible
+              ? "Сначала заверши подтверждение в блоке «Твой пропуск на премию»."
+              : "Поддержи номинации, которые должны попасть в финальный список.";
       } else if (stage === "candidates") {
         noticeText = !votingOpen
           ? "Голосование за кандидатов скоро откроется."
@@ -2012,7 +2024,7 @@
 
         if (adminEditingId === "new") {
           const { data, error } = await db.from("categories")
-            .insert({ id: crypto.randomUUID(), ...payload })
+            .insert({ id: newId(), ...payload })
             .select("id,title,description,is_permanent,position")
             .single();
           if (error) throw error;
@@ -2204,39 +2216,49 @@
       status.textContent = "Загружаем…";
 
       try {
-        const [proposalsRes, candRes] = await Promise.all([
+        const [proposalsRes, candRes, votesRes] = await Promise.all([
           db.from("category_proposals")
             .select("id,title,description,status")
             .eq("status", "pending")
             .order("created_at"),
-          db.rpc("admin_candidate_proposals")
+          db.rpc("admin_candidate_proposals"),
+          db.from("proposal_votes").select("proposal_id")
         ]);
 
         if (proposalsRes.error) throw proposalsRes.error;
         if (candRes.error) throw candRes.error;
+        if (votesRes.error) throw votesRes.error;
 
-        // Голоса за предложения считаем RPC-функцией (админской).
-        let counts = new Map();
-        const countsRes = await db.rpc("admin_proposal_counts");
-        if (!countsRes.error) {
-          counts = countsRes.data.reduce((map, row) => {
-            map.set(String(row.proposal_id), Number(row.votes));
-            return map;
-          }, new Map());
-        }
+        // RLS отдаёт админу все голоса — считаем прямо на клиенте.
+        // Ключи и поиск — только строки, иначе Map не совпадёт по типам.
+        const counts = votesRes.data.reduce((map, row) => {
+          const key = String(row.proposal_id);
+          map.set(key, (map.get(key) || 0) + 1);
+          return map;
+        }, new Map());
+
+        // Сортируем по числу голосов: топ сразу наверху.
+        const sortedProposals = [...proposalsRes.data].sort(
+          (a, b) => (counts.get(String(b.id)) || 0) -
+                    (counts.get(String(a.id)) || 0)
+        );
+
+        $("admin-proposals-head").textContent =
+          `Номинации от участников · в финале ` +
+          `${categories.length} из ${finalCount}`;
 
         const proposalList = $("admin-proposals");
         proposalList.replaceChildren();
 
-        if (!proposalsRes.data.length) {
+        if (!sortedProposals.length) {
           proposalList.append(make("div", "empty", "Пока пусто"));
         }
 
-        proposalsRes.data.forEach((proposal) => {
+        sortedProposals.forEach((proposal) => {
           const item = make("div", "admin-item");
           item.append(make("span", "grow", proposal.title));
           item.append(make("span", "count",
-            `${counts.get(proposal.id) || 0} гол.`));
+            `${counts.get(String(proposal.id)) || 0} гол.`));
 
           const add = make("button", "", "В финал");
           add.type = "button";
@@ -2307,7 +2329,7 @@
         ) + 1;
 
         const { error } = await db.from("categories").insert({
-          id: crypto.randomUUID(),
+          id: newId(),
           title: proposal.title,
           description: proposal.description || "",
           is_permanent: false,
@@ -2331,7 +2353,8 @@
         loadModeration();
       } catch (error) {
         console.error(error);
-        $("admin-mod-status").textContent = "Не удалось добавить.";
+        $("admin-mod-status").textContent =
+          "Не удалось добавить: " + (error.message || error.code || error);
       } finally {
         savingAdmin = false;
       }
