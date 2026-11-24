@@ -99,6 +99,32 @@
     }
     .nav-link:hover { color: var(--text); }
 
+    .nav-user {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 180px;
+      padding: 7px 14px;
+      border: 1px solid #dcff6230;
+      border-radius: 999px;
+      background: #dcff620a;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .nav-user::before {
+      content: "";
+      flex: 0 0 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
     /* ---------- Кнопки ---------- */
     .button {
       display: inline-flex;
@@ -819,6 +845,8 @@
         <a class="nav-link" href="#account">Аккаунт</a>
         <a class="nav-link" href="#nominations">Номинации</a>
 
+        <span id="nav-user" class="nav-user" hidden></span>
+
         <button id="admin-button" class="button secondary sm" hidden>
           Управление
         </button>
@@ -1339,7 +1367,8 @@
               ? " · " + access.discord_name
               : ""}. Участвуй!`,
           error:
-            "Не удалось проверить допуск. Нажми «Проверить статус»."
+            "Не удалось проверить допуск: " +
+            (access.message || "нажми «Проверить статус».")
         };
         message = messages[reason] || "Обнови статус аккаунта.";
       }
@@ -1774,6 +1803,15 @@
       $("auth-button").disabled =
         !connected || checking || linking || savingVote;
 
+      // Discord-ник рядом с кнопкой выхода.
+      const navUser = $("nav-user");
+      const nick = user?.user_metadata?.user_name ||
+        user?.user_metadata?.global_name ||
+        user?.user_metadata?.name ||
+        user?.user_metadata?.full_name;
+      navUser.hidden = !nick;
+      navUser.textContent = nick || "";
+
       $("admin-button").hidden = !(connected && user && isAdmin);
 
       if (!isAdmin && $("admin-dialog").open) $("admin-dialog").close();
@@ -1850,7 +1888,11 @@
         if (version !== accountVersion || user?.id !== currentUserId) return;
 
         console.error(error);
-        access = { eligible: false, reason: "error" };
+        access = {
+          eligible: false,
+          reason: "error",
+          message: error.message || String(error)
+        };
         notify("Не удалось подтвердить допуск. Проверь статус ещё раз.");
       } finally {
         if (version === accountVersion) {
