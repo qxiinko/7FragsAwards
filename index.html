@@ -541,6 +541,20 @@
     }
     dialog::backdrop { background: #000c; backdrop-filter: blur(6px); }
     #admin-dialog { width: min(640px, calc(100% - 28px)); }
+    #proposal-view { width: min(720px, calc(100% - 28px)); }
+    #proposal-view p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
+    #proposal-view .on-btn {
+      border-color: #dcff6250;
+      background: #dcff6212;
+      color: var(--accent);
+    }
+    .card.votable { cursor: pointer; }
     .dialog-head {
       display: flex;
       align-items: center;
@@ -807,7 +821,7 @@
             <input id="propose-title" type="text" maxlength="100"
                    placeholder="Название номинации" required>
             <textarea id="propose-desc" maxlength="1500" rows="3"
-                      placeholder="Кого и за что награждаем — необязательно"></textarea>
+                      placeholder="Кого и за что награждаем"></textarea>
             <button id="propose-submit" class="button" type="submit">
               Отправить предложение →
             </button>
@@ -1020,6 +1034,22 @@
 
       <p id="admin-settings-status" class="form-status" role="status"></p>
     </div>
+  </dialog>
+
+  <dialog id="proposal-view" aria-labelledby="proposal-view-title">
+    <div class="dialog-head">
+      <h2 id="proposal-view-title"></h2>
+      <button id="close-proposal-view" class="close" type="button"
+              aria-label="Закрыть">×</button>
+    </div>
+
+    <p id="proposal-view-desc"></p>
+
+    <button id="proposal-view-vote" class="button" type="button" hidden>
+      Поддержать
+    </button>
+
+    <p id="proposal-view-author" class="form-status" hidden></p>
   </dialog>
 
   <div id="toast" class="toast" role="status" hidden></div>
@@ -1413,6 +1443,10 @@
 
     function proposalCard(proposal) {
       const card = make("article", "card votable");
+      card.tabIndex = 0;
+      card.setAttribute("role", "button");
+      card.setAttribute("aria-label",
+        `Открыть номинацию «${proposal.title}»`);
       card.append(
         make("span", "ghost", String(
           proposals.indexOf(proposal) + 1
@@ -1440,14 +1474,71 @@
         button.textContent = voted
           ? "✓ Поддержано"
           : "Поддержать";
-        button.addEventListener("click", () => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
           toggleProposalVote(proposal.id);
         });
         card.append(button);
       }
 
+      // Клик по карточке — большое окно с полным текстом.
+      card.addEventListener("click", () => openProposalView(proposal));
+      card.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openProposalView(proposal);
+        }
+      });
+
       return card;
     }
+
+    function openProposalView(proposal) {
+      const dialog = $("proposal-view");
+      $("proposal-view-title").textContent = proposal.title;
+      const desc = $("proposal-view-desc");
+      desc.textContent = proposal.description || "";
+      desc.hidden = !proposal.description;
+
+      const author = $("proposal-view-author");
+      if (user && proposal.author_id === user.id) {
+        author.textContent = "Это твоё предложение.";
+        author.hidden = false;
+      } else {
+        author.hidden = true;
+      }
+
+      const vote = $("proposal-view-vote");
+      if (stage === "nominations") {
+        const voted = myProposalVotes.has(proposal.id);
+        vote.hidden = false;
+        vote.disabled = !connected || !votingOpen || checking;
+        vote.classList.toggle("on-btn", voted);
+        vote.textContent = voted
+          ? "✓ Поддержано — убрать голос"
+          : "Поддержать";
+        vote.onclick = () => {
+          toggleProposalVote(proposal.id);
+          vote.textContent = myProposalVotes.has(proposal.id)
+            ? "✓ Поддержано — убрать голос"
+            : "Поддержать";
+          vote.classList.toggle("on-btn", myProposalVotes.has(proposal.id));
+        };
+      } else {
+        vote.hidden = true;
+        vote.onclick = null;
+      }
+
+      if (!dialog.open) dialog.showModal();
+    }
+
+    $("close-proposal-view").addEventListener("click", () => {
+      $("proposal-view").close();
+    });
+    $("proposal-view").addEventListener("click", (event) => {
+      // Закрытие по клику на затемнение.
+      if (event.target === $("proposal-view")) $("proposal-view").close();
+    });
 
     // ---------- Страница номинации ----------
     async function renderDetail(category) {
