@@ -1269,6 +1269,11 @@
       }, 6500);
     }
 
+    // Discord-дискриминатор (#0, #1234) в нике не нужен.
+    function displayNick(name) {
+      return (name || "").replace(/#\d+$/, "").trim();
+    }
+
     function initials(name) {
       return name.trim().split(/\s+/).slice(0, 2)
         .map((word) => Array.from(word)[0] || "")
@@ -1515,8 +1520,9 @@
 
       if (isMine) {
         top.append(make("span", "badge mine", "Твоё предложение"));
-      } else if (authorName) {
-        top.append(make("span", "badge", `От ${authorName}`));
+      } else if (displayNick(authorName)) {
+        top.append(make("span", "badge",
+          `От ${displayNick(authorName)}`));
       } else {
         top.append(make("span", "badge", "От участника"));
       }
@@ -1569,8 +1575,8 @@
       if (user && proposal.author_id === user.id) {
         author.textContent = "Это твоё предложение.";
         author.hidden = false;
-      } else if (name) {
-        author.textContent = `Предложил: ${name}`;
+      } else if (displayNick(name)) {
+        author.textContent = `Предложил: ${displayNick(name)}`;
         author.hidden = false;
       } else {
         author.textContent = "Предложил: участник";
@@ -1842,8 +1848,9 @@
         user?.user_metadata?.global_name ||
         user?.user_metadata?.name ||
         user?.user_metadata?.full_name;
-      navUser.hidden = !nick;
-      navUser.textContent = nick || "";
+      const cleanNick = displayNick(nick);
+      navUser.hidden = !cleanNick;
+      navUser.textContent = cleanNick;
 
       $("admin-button").hidden = !(connected && user && isAdmin);
 
