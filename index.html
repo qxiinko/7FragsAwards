@@ -2108,8 +2108,9 @@
       } catch (error) {
         console.error(error);
         $("auth-status").textContent =
-          "Не удалось отправить письмо. " +
-          "Попробуй позже или обратись к организатору.";
+          "Не удалось отправить письмо: " +
+          (error.message || error.code || error) +
+          " · попробуй позже или обратись к организатору.";
       } finally {
         $("send-link").disabled = false;
       }
